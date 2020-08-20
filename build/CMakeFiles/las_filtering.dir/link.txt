@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblas_filtering.a  CMakeFiles/las_filtering.dir/src/las_filtering.cpp.o
+/usr/bin/ranlib liblas_filtering.a

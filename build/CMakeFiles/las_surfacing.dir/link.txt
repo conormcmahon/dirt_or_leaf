@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblas_surfacing.a  CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o
+/usr/bin/ranlib liblas_surfacing.a
