@@ -15,24 +15,15 @@
 
 namespace pcl
 {
+    // Copy PointCloud between two XYZ-based point clouds
     template <typename CloudIn, typename CloudOut> void 
     copyPointCloud3D(CloudIn input, CloudOut output);
-    // LAS -> XY+Scale
-    /*void copyPointCloud(pcl::PointCloud<pcl::PointLAS>::Ptr input, pcl::PointCloud<pcl::Point2DScale>::Ptr output);
-    // LAS -> XY+Index
-    void copyPointCloud(pcl::PointCloud<pcl::PointLAS>::Ptr input, pcl::PointCloud<pcl::Point2DIndex>::Ptr output);
-    // XY+Scale -> XYZ
-    void copyPointCloud(pcl::PointCloud<pcl::Point2DScale>::Ptr input, pcl::PointCloud<pcl::PointXYZ>::Ptr output);
-    // LAS -> Veg
-    void copyPointCloud(pcl::PointCloud<pcl::PointLAS>::Ptr input, pcl::PointCloud<pcl::PointVeg>::Ptr output);
-    // LAS -> XYZ
-    void copyPointCloud(pcl::PointCloud<pcl::PointLAS>::Ptr input, pcl::PointCloud<pcl::PointXYZ>::Ptr output);
-    // LAS -> XYZI
-    void copyPointCloud(pcl::PointCloud<pcl::PointLAS>::Ptr input, pcl::PointCloud<pcl::PointXYZI>::Ptr output);
-    // XYZ -> XYZI
-    void copyPointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr input, pcl::PointCloud<pcl::PointXYZI>::Ptr output);
-    // Veg -> XYZ
-    void copyPointCloud(pcl::PointCloud<pcl::PointVeg>::Ptr input, pcl::PointCloud<pcl::PointXYZ>::Ptr output); */
+    // Copy PointCloud between two XY-based point clouds
+    template <typename CloudIn, typename CloudOut> void 
+    copyPointCloud2D(CloudIn input, CloudOut output);
+    // Copy PointCloud from 3D to 2.5D 
+    template <typename CloudIn, typename CloudOut> void 
+    copyPointCloud2_5D(CloudIn input, CloudOut output);
 }
 
 
