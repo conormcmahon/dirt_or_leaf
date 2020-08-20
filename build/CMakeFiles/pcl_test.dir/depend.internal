@@ -7,7 +7,8 @@ CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o
  ../include/dirt_or_leaf/las_conversions.h
  ../include/dirt_or_leaf/las_conversions.hpp
  ../include/dirt_or_leaf/las_filtering.h
- ../include/dirt_or_leaf/las_surfacing.h
+ ../include/dirt_or_leaf/las_filtering.hpp
+ ../include/dirt_or_leaf/las_surfacing.hpp
  ../include/dirt_or_leaf/pcl_test.h
  ../include/dirt_or_leaf/point_2d_index.h
  ../include/dirt_or_leaf/point_2d_scale.h
@@ -254,7 +255,6 @@ CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o
  /usr/local/include/pcl-1.11/pcl/common/copy_point.h
  /usr/local/include/pcl-1.11/pcl/common/distances.h
  /usr/local/include/pcl-1.11/pcl/common/eigen.h
- /usr/local/include/pcl-1.11/pcl/common/geometry.h
  /usr/local/include/pcl-1.11/pcl/common/impl/accumulators.hpp
  /usr/local/include/pcl-1.11/pcl/common/impl/centroid.hpp
  /usr/local/include/pcl-1.11/pcl/common/impl/common.hpp
@@ -386,14 +386,5 @@ CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o
  /usr/local/include/pcl-1.11/pcl/search/search.h
  /usr/local/include/pcl-1.11/pcl/segmentation/impl/sac_segmentation.hpp
  /usr/local/include/pcl-1.11/pcl/segmentation/sac_segmentation.h
- /usr/local/include/pcl-1.11/pcl/surface/boost.h
- /usr/local/include/pcl-1.11/pcl/surface/gp3.h
- /usr/local/include/pcl-1.11/pcl/surface/impl/gp3.hpp
- /usr/local/include/pcl-1.11/pcl/surface/impl/mls.hpp
- /usr/local/include/pcl-1.11/pcl/surface/impl/processing.hpp
- /usr/local/include/pcl-1.11/pcl/surface/impl/reconstruction.hpp
- /usr/local/include/pcl-1.11/pcl/surface/mls.h
- /usr/local/include/pcl-1.11/pcl/surface/processing.h
- /usr/local/include/pcl-1.11/pcl/surface/reconstruction.h
  /usr/local/include/pcl-1.11/pcl/type_traits.h
  /usr/local/include/pcl-1.11/pcl/types.h

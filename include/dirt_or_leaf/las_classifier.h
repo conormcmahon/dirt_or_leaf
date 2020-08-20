@@ -2,8 +2,8 @@
 #ifndef LAS_CLASSIFIER_
 #define LAS_CLASSIFIER_
 
-#include <dirt_or_leaf/las_filtering.h>
-#include <dirt_or_leaf/las_surfacing.h>
+#include <dirt_or_leaf/las_filtering.hpp>
+#include <dirt_or_leaf/las_surfacing.hpp>
 #include <dirt_or_leaf/las_conversions.hpp>
 
 #include <pcl/io/pcd_io.h>
@@ -27,6 +27,8 @@ public:
     // 2D Point Type with Index (to LAS source point)
     typedef typename pcl::PointCloud<pcl::Point2DIndex> SC;
     typedef typename pcl::PointCloud<pcl::Point2DIndex>::Ptr SCP;
+  // KdTree Defines
+    typedef typename pcl::KdTreeFLANN<pcl::Point2DIndex>::Ptr tree_2D;
 
   // Constructors
     LASClassifier();
@@ -34,10 +36,11 @@ public:
   // Member Function
     void setInputLAS(LCP input);
     int loadLASPCD(std::string filename);
-    // Debugging Options
+    // Output Options
     void setTimekeeping(bool timekeeping);
     void setDecimationDebugging(bool decimation_debugging);
     void setGroundFilterDebugging(bool ground_filter_debugging_);
+    void setOutputOptions(bool save_outputs, std::string output_director="", std::string scene_name="");
     // Filter to Ground
     void decimateToMinima(int decimation_factor);
     void decimateToMaxima(int decimation_factor);
@@ -52,11 +55,22 @@ private:
     SCP ground_filtered_;
     // Final ground cloud (after re-adding excluded points)
     SCP ground_;
+  // Search Trees on Clouds
+    tree_2D input_tree_;
+    tree_2D ground_decimated_tree_;
+    tree_2D ground_filtered_tree_;
+    tree_2D ground_tree_;
 
-  // Options
+  // Output Options
     bool timekeeping_;
     bool decimation_debugging_;
     bool ground_filter_debugging_;
+    bool save_outputs_;
+    std::string output_directory_;
+    std::string scene_name_;
+
+    template<typename CloudType, typename PointType> void outputPCD(CloudType cloud, std::string filename);
+    template<typename CloudType, typename PointType> void outputPCDASCII(CloudType cloud, std::string filename);
 
   // Timekeeping
     float loading_time_;

@@ -21,6 +21,26 @@
 
 #include <pcl/kdtree/kdtree_flann.h>
 
+namespace las_filtering{
+
+// ---- Decimation ----
+// Reduce cloud density, keeping only one local *minimum* point for every DECIMATION_FACTOR points
+template <typename CloudType, typename Cloud2DType, typename PointType> 
+void decimateToMinima(CloudType input, Cloud2DType input_flat, CloudType output, int decimation_factor);
+// Reduce cloud density, keeping only one local *maximum* point for every DECIMATION_FACTOR points
+template <typename CloudType, typename Cloud2DType, typename PointType> 
+void decimateToMinima(CloudType input, Cloud2DType input_flat, CloudType output, int decimation_factor);
+
+
+// ---- Last Return Filter ----
+// Remove all points EXCEPT the last returns 
+template <typename CloudType> 
+void filterToLastReturn(CloudType input, CloudType output);
+template <typename CloudType, typename Cloud2DType> 
+void filterToLastReturn(CloudType data, Cloud2DType input, Cloud2DType output);
+
+}
+
 //std::vector<int> getNeighbors(pcl::Point2DIndex source, SCP target, bool keep_self=false);
 
 #endif //LAS_FILTERING_

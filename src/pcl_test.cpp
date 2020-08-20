@@ -19,19 +19,25 @@ int main(int argc, char *argv[])
     std::cout << "Didn't receive expected number of arguments. Usage: data/" << argv[0] << ".pdc <filename>\n";
     return -1;
   }
+  std::cout << argc << " " << argv;
+  
+  for(int i=0; i<10000000; i++);
 
   std::string filename = argv[1];
   int decimation_factor = std::atoi(argv[2]);
   float minima_radius = std::atof(argv[3]);
 
+  std::cout << filename << " " << decimation_factor << " " << minima_radius;
+
+  for(int i=0; i<10000000; i++);
+
   // Perform Classification 
-  //template class LASClassifier<pcl::PointLAS, pcl::PointVeg>;
   LASClassifier< pcl::PointLAS , pcl::PointVeg > classifier;
   classifier.loadLASPCD(filename);
 
   pcl::PointCloud<pcl::PointXYZI>::Ptr xyzi(new pcl::PointCloud<pcl::PointXYZI>);
   pcl::PointCloud<pcl::PointLAS>::Ptr las(new pcl::PointCloud<pcl::PointLAS>);
-  pcl::copyPointCloud3D(xyzi, las);
+  //pcl::copyPointCloud3D(xyzi, las);
 
   std::cout << std::endl;
   return (0);

@@ -21,6 +21,9 @@ namespace pcl
     // Copy PointCloud between two XY-based point clouds
     template <typename CloudIn, typename CloudOut> void 
     copyPointCloud2D(CloudIn input, CloudOut output);
+    // Copy PointCloud from 3D two XY-based point clouds, retaining Point Index
+    template <typename CloudIn, typename CloudOut> void 
+    copyPointCloud2Dndex(CloudIn input, CloudOut output);
     // Copy PointCloud from 3D to 2.5D 
     template <typename CloudIn, typename CloudOut> void 
     copyPointCloud2_5D(CloudIn input, CloudOut output);
