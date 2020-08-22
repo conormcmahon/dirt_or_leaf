@@ -128,4 +128,14 @@ namespace pcl
             output->points[i].curvature = input->points[i].curvature;
         }
     }
+
+    template <typename PointIn, typename PointOut>
+    PointOut copyPoint3D(PointIn point_in)
+    {
+        PointOut point_out;
+        point_out.x = point_in.x;
+        point_out.y = point_in.y;
+        point_out.z = point_in.z;
+        return point_out;
+    }
 }

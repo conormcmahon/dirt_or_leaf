@@ -18,11 +18,12 @@ public:
         process_name_ = process_name;
         start_time_ = std::chrono::high_resolution_clock::now();
     }
-    float stop()
+    float stop(bool print=true)
     {
         stop_time_ = std::chrono::high_resolution_clock::now();
         float duration = std::chrono::duration_cast<std::chrono::microseconds>( stop_time_ - start_time_ ).count();
-        std::cout << "Execution time for process " << process_name_ << " was " << duration/1000000 << std::endl; 
+        if(print)
+            std::cout << "  Execution time for process " << process_name_ << " was " << duration/1000000 << std::endl; 
         return duration;
     }
 };

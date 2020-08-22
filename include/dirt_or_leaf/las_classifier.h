@@ -25,8 +25,12 @@ public:
     typedef typename pcl::PointCloud<GroundType> GC;
     typedef typename pcl::PointCloud<GroundType>::Ptr GCP;
   // KdTree Defines
-    typedef typename pcl::KdTreeFLANN<GroundType> tree_2D;
-    typedef typename pcl::KdTreeFLANN<GroundType>::Ptr tree_2DP;
+    // 3D Search on LAS Type
+    typedef typename pcl::KdTreeFLANN<LASType> Tree3D;
+    typedef typename pcl::KdTreeFLANN<LASType>::Ptr Tree3DP;
+    // 2D Search on Ground 
+    typedef typename pcl::KdTreeFLANN<GroundType> Tree2D;
+    typedef typename pcl::KdTreeFLANN<GroundType>::Ptr Tree2DP;
 
   // Constructors
     LASClassifier();
@@ -39,15 +43,17 @@ public:
     void setInputLAS(LCP input);
     int loadLASPCD(std::string filename);
     // Output Options
-    void setDebugging(bool debugging);
+    void setVerbosity(bool verbosity);
     void setTimekeeping(bool timekeeping);
-    void setDecimationDebugging(bool decimation_debugging);
-    void setGroundFilterDebugging(bool ground_filter_debugging);
+    void setDebugging(bool debugging);
     void setOutputOptions(bool save_outputs, std::string output_director="", std::string scene_name="");
     // Filter to Ground
     void decimateToMinima(int decimation_factor, bool return_information);
     void decimateToMaxima(int decimation_factor, bool return_information);
     void curvatureAnalysis(int num_neighbors, int roughness_neighbors);
+    // Vegetation Extraction
+    void extractVegetation(float min_height);
+
 
 private:
   // Point Clouds 
@@ -59,19 +65,23 @@ private:
     GCP ground_filtered_;
     // Final ground cloud (after re-adding excluded points)
     GCP ground_;
+    // Vegetation Cloud
+    VCP vegetation_;
   // Search Trees on Clouds
-    tree_2DP input_tree_;
-    tree_2DP ground_decimated_tree_;
-    tree_2DP ground_filtered_tree_;
-    tree_2DP ground_tree_;
+    // 3D Search Trees
+    Tree3DP input_las_tree_;
+    // 2D Search Trees
+    Tree2DP input_tree_;
+    Tree2DP ground_decimated_tree_;
+    Tree2DP ground_filtered_tree_;
+    Tree2DP ground_tree_;
 
   // Should cloud be de-meaned and scaled in XYZ to prevent overflow for very large coordinate systems? 
     bool demean_;
 
   // Output Options
     bool timekeeping_;
-    bool decimation_debugging_;
-    bool ground_filter_debugging_;
+    bool debugging_;
     bool save_outputs_;
     std::string output_directory_;
     std::string scene_name_;

@@ -140,8 +140,6 @@ void estimateNormals(CloudType input, CloudNormalsType normals, bool radius_sear
         norm_est.setKSearch(search_parameter);
     norm_est.compute(*normals);
     
-    std::cout << normals->points[1000].normal_z << " " << normals->points[5000].normal_z << " " << normals->points[2000].normal_z << " " << normals->points[4000].normal_z << std::endl;
-
     pcl::copyPointCloud3D<CloudType, CloudNormalsType>(input, normals);
 
     // If requested, flip all normals to ensure they point upwards
@@ -193,9 +191,6 @@ void estimateRoughness(InputCloudType input, OutputCloudType output, bool radius
             float angle_difference = std::acos(source_normal.dot(target_normal) / source_normal_mag / target_normal_mag);
             avg_angle_difference += angle_difference;
 
-            //std::cout << source_normal << " source " << source_normal_mag << std::endl;
-            //std::cout << target_normal << " target " << target_normal_mag << std::endl;
-            //std::cout << angle_difference << " " << indices.size() << std::endl;
             height_difference += output->points[i].z - input->points[indices[j]].z;
         }
         output->points[i].height_diff_avg = height_difference / indices.size();
@@ -216,7 +211,6 @@ Eigen::Vector3d deMeanCloud(CloudType cloud)
         mean_coords[1] += (cloud->points[i].y / cloud->points.size());
         mean_coords[2] += (cloud->points[i].z / cloud->points.size());
     }
-    std::cout << " mean values: " << mean_coords;
     for(std::size_t i; i<cloud->points.size(); i++)
     {
         cloud->points[i].x = float(cloud->points[i].x - mean_coords[0]);
@@ -225,6 +219,45 @@ Eigen::Vector3d deMeanCloud(CloudType cloud)
     }  
     return mean_coords;
 }
+
+
+
+// Get point height as inverse-square-distance-weighted difference between point z-value and z-value of NUM_NEIGHBORS points
+//   Distance for weighting is evaluated in 2D (XY)
+//   Nearest neighbors are in the search space of KdTreeType
+//   Generally, should choose a search tree type that is 2D as well
+// Is there a safer way to handle inverse distance weighting to prevent overflow for very close (or coincident) points?
+//   Maybe some kind of fixed Mexican Hat-style wavelet kernel? 
+template <typename CloudType, typename SourcePointType, typename KdTreeType>
+float relativePointHeight(CloudType cloud, SourcePointType point, KdTreeType tree, int num_neighbors)
+{
+//   std::cout << " got a point in here! " << num_neighbors << " " << point.x << " " << point.y << " " << point.z << " " << cloud->points.size() << std::endl;
+//   std::cin.get();
+   std::vector<int> indices;
+   std::vector<float> dists;
+   tree->nearestKSearch(point, num_neighbors, indices, dists);
+
+   float total_weighted_height_diff = 0;
+   float total_inverse_distance = 0;
+//
+//   std::cout << " and here! " << indices.size() << std::endl;
+//   std::cin.get();
+///    std::cout << " and here! " << indices[0] << " " cloud->points << std::endl;
+//   std::cin.get();
+    for(std::size_t i; i<indices.size(); i++)
+    {
+        Eigen::Vector2f xy_vector_between_points;
+        xy_vector_between_points << (point.x - cloud->points[indices[i]].x),
+                                    (point.y - cloud->points[indices[i]].y);
+        float planar_distance = xy_vector_between_points.norm();
+        float height_difference = point.z - cloud->points[indices[i]].z;
+
+        total_weighted_height_diff += height_difference / pow(planar_distance,2);
+        total_inverse_distance += 1/pow(planar_distance,2);
+    }
+    return total_weighted_height_diff / total_inverse_distance;
+}
+
 
 
 }

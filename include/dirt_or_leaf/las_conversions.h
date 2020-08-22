@@ -44,6 +44,12 @@ namespace pcl
     // Copy Normals information from one cloud to another
     template <typename CloudIn, typename CloudOut>
     void copyPointCloudNormals(CloudIn input, CloudOut output);
+
+
+
+    // Copy Point
+    template <typename PointIn, typename PointOut>
+    PointOut copyPoint3D(PointIn point_in);
 }
 
 

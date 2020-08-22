@@ -52,6 +52,10 @@ namespace las_filtering{
     template <typename CloudType>
     Eigen::Vector3d deMeanCloud(CloudType cloud);
 
+
+    // Relative Point Height
+    template <typename CloudType, typename SourcePointType, typename KdTreeType>
+    float relativePointHeight(CloudType cloud, SourcePointType point, KdTreeType tree, int num_neighbors);
 }
 
 //std::vector<int> getNeighbors(pcl::Point2DIndex source, SCP target, bool keep_self=false);
