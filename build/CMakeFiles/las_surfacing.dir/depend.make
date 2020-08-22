@@ -4,8 +4,9 @@
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/las_conversions.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/las_filtering.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/las_surfacing.h
+CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/point_2d_elevation.h
+CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/point_2d_ground.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/point_2d_index.h
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/point_2d_scale.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/point_las.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/point_veg.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: ../include/dirt_or_leaf/timer.h
@@ -287,12 +288,6 @@ CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.1
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/impl/instantiate.hpp
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/impl/pcl_base.hpp
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/impl/point_types.hpp
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/io/boost.h
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/io/file_io.h
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/io/impl/pcd_io.hpp
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/io/low_level_io.h
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/io/lzf.h
-CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/io/pcd_io.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/kdtree/impl/kdtree_flann.hpp
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/kdtree/kdtree.h
 CMakeFiles/las_surfacing.dir/src/las_surfacing.cpp.o: /usr/local/include/pcl-1.11/pcl/kdtree/kdtree_flann.h

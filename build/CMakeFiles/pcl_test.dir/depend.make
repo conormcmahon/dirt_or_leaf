@@ -9,8 +9,9 @@ CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/las_filterin
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/las_filtering.hpp
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/las_surfacing.hpp
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/pcl_test.h
+CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/point_2d_elevation.h
+CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/point_2d_ground.h
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/point_2d_index.h
-CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/point_2d_scale.h
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/point_las.h
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/point_veg.h
 CMakeFiles/pcl_test.dir/src/pcl_test.cpp.o: ../include/dirt_or_leaf/timer.h

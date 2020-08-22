@@ -1,6 +1,6 @@
 
-#ifndef POINT_2DINDEX_
-#define POINT_2DINDEX_
+#ifndef POINT_2DELEVATION_
+#define POINT_2DELEVATION_
 #define PCL_NO_PRECOMPILE
 
 #include <pcl/point_types.h>
@@ -9,24 +9,23 @@
 
 namespace pcl{
 
-struct Point2DIndex
+struct Point2DElevation
   {
-    float x;
-    float y;
-    int index;
+    PCL_ADD_POINT4D;
+    float elevation;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW     // Ensure proper alignment
   } EIGEN_ALIGN16;
 }
 
-POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::Point2DIndex,
+POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::Point2DElevation,
                                   (float, x, x)
                                   (float, y, y)
-                                  (int, index, index)
+                                  (float, z, z)
 )
 
 namespace pcl {
 template <>
-class DefaultPointRepresentation<Point2DIndex> : public PointRepresentation<Point2DIndex>
+class DefaultPointRepresentation<Point2DElevation> : public PointRepresentation<Point2DElevation>
 {
 public:
   DefaultPointRepresentation ()
@@ -35,7 +34,7 @@ public:
   }
   
   virtual void
-  copyToFloatArray (const Point2DIndex &p, float * out) const
+  copyToFloatArray (const Point2DElevation &p, float * out) const
   {
     out[0] = p.x;
     out[1] = p.y;
@@ -43,4 +42,4 @@ public:
 };
 }
 
-#endif // POINT_2DINDEX_
+#endif // POINT_2DELEVATION_

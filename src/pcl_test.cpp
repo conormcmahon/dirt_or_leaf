@@ -8,37 +8,44 @@ typedef typename pcl::PointCloud<pcl::PointVeg>           VC;
 typedef typename pcl::PointCloud<pcl::PointVeg>::Ptr      VCP;
 typedef typename pcl::PointCloud<pcl::PointXYZI>          PC;      
 typedef typename pcl::PointCloud<pcl::PointXYZI>::Ptr     PCP;
-typedef typename pcl::PointCloud<pcl::Point2DIndex>       SC;
-typedef typename pcl::PointCloud<pcl::Point2DIndex>::Ptr  SCP;
+typedef typename pcl::PointCloud<pcl::Point2DGround>      GC;
+typedef typename pcl::PointCloud<pcl::Point2DGround>::Ptr GCP;
 
 int main(int argc, char *argv[])
 {
-  if ( argc != 4 ) // argc should be 2 for correct execution
+  std::cout << std::endl;
+  std::cout << "Beginning LiDAR classification routine." << std::endl;
+
+  if ( argc != 6 ) // argc should be 2 for correct execution
   {
     // We print argv[0] assuming it is the target file
     std::cout << "Didn't receive expected number of arguments. Usage: data/" << argv[0] << ".pdc <filename>\n";
     return -1;
   }
-  std::cout << argc << " " << argv;
-  
-  for(int i=0; i<10000000; i++);
 
   std::string filename = argv[1];
   int decimation_factor = std::atoi(argv[2]);
-  float minima_radius = std::atof(argv[3]);
-
-  std::cout << filename << " " << decimation_factor << " " << minima_radius;
-
-  for(int i=0; i<10000000; i++);
+  double minima_radius = std::atof(argv[3]);
+  int normal_neighbors = std::atoi(argv[4]);
+  int roughness_neighbors = std::atoi(argv[5]);
 
   // Perform Classification 
-  LASClassifier< pcl::PointLAS , pcl::PointVeg > classifier;
-  classifier.loadLASPCD(filename);
+  LASClassifier<pcl::PointLAS , pcl::PointVeg, pcl::Point2DGround> classifier(true);
+  classifier.loadLASPCD(filename + std::string(".pcd"));
+  classifier.setOutputOptions(true, "/home/conor/lidar_data/", filename);
+  classifier.decimateToMinima(decimation_factor, true);
+  classifier.curvatureAnalysis(normal_neighbors, roughness_neighbors);
+  
+  /*
 
-  pcl::PointCloud<pcl::PointXYZI>::Ptr xyzi(new pcl::PointCloud<pcl::PointXYZI>);
-  pcl::PointCloud<pcl::PointLAS>::Ptr las(new pcl::PointCloud<pcl::PointLAS>);
-  //pcl::copyPointCloud3D(xyzi, las);
+  LCP las(new LC);
+  VCP veg(new VC);
+  SCP index(new SC);
+  PCP xyzi(new PC);
 
+  //typename las_filtering::decimateToMinima<LCP, SCP, pcl::Point2DIndex>;
+  //las_filtering::decimateToMinima<LCP, SCP, pcl::Point2DIndex>(las, index, index, 10);
+*/
   std::cout << std::endl;
   return (0);
 }

@@ -24,12 +24,12 @@ if ( NOT Boost_FOUND )
 endif()
 
 
-add_executable(pcl_test src/pcl_test.cpp)
-target_link_libraries(pcl_test ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
-
 add_library(las_classifier src/las_classifier.cpp)
 target_link_libraries(las_classifier ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
-add_library(las_filtering src/las_filtering.cpp)
-target_link_libraries(las_filtering ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+#add_library(las_filtering src/las_filtering.cpp)
+#target_link_libraries(las_filtering ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
 add_library(las_surfacing src/las_surfacing.cpp)
 target_link_libraries(las_surfacing ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+
+add_executable(pcl_test src/pcl_test.cpp)
+target_link_libraries(pcl_test ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})

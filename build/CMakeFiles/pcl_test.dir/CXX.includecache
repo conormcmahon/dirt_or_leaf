@@ -31,9 +31,11 @@ dirt_or_leaf/point_las.h
 -
 dirt_or_leaf/point_veg.h
 -
-dirt_or_leaf/point_2d_scale.h
+dirt_or_leaf/point_2d_elevation.h
 -
 dirt_or_leaf/point_2d_index.h
+-
+dirt_or_leaf/point_2d_ground.h
 -
 pcl/impl/instantiate.hpp
 -
@@ -44,6 +46,8 @@ dirt_or_leaf/las_conversions.h
 
 ../include/dirt_or_leaf/las_filtering.h
 dirt_or_leaf/las_conversions.h
+-
+dirt_or_leaf/timer.h
 -
 pcl/ModelCoefficients.h
 -
@@ -63,8 +67,6 @@ pcl/kdtree/kdtree_flann.h
 -
 pcl/search/kdtree.h
 -
-dirt_or_leaf/timer.h
--
 pcl/kdtree/kdtree_flann.h
 -
 
@@ -82,63 +84,51 @@ iostream
 dirt_or_leaf/las_classifier.hpp
 ../include/dirt_or_leaf/dirt_or_leaf/las_classifier.hpp
 
-../include/dirt_or_leaf/point_2d_index.h
-iostream
--
-pcl/io/pcd_io.h
--
+../include/dirt_or_leaf/point_2d_elevation.h
 pcl/point_types.h
 -
-pcl/kdtree/kdtree_flann.h
+pcl/point_representation.h
 -
 pcl/impl/instantiate.hpp
--
-pcl/filters/passthrough.h
 -
 
-../include/dirt_or_leaf/point_2d_scale.h
-iostream
--
-pcl/io/pcd_io.h
--
+../include/dirt_or_leaf/point_2d_ground.h
 pcl/point_types.h
 -
-pcl/kdtree/kdtree_flann.h
+pcl/point_representation.h
 -
 pcl/impl/instantiate.hpp
 -
-pcl/filters/passthrough.h
+
+../include/dirt_or_leaf/point_2d_index.h
+pcl/point_types.h
+-
+pcl/point_representation.h
+-
+pcl/impl/instantiate.hpp
 -
 
 ../include/dirt_or_leaf/point_las.h
-iostream
--
-pcl/io/pcd_io.h
--
 pcl/point_types.h
 -
-pcl/kdtree/kdtree_flann.h
+pcl/point_representation.h
 -
 pcl/impl/instantiate.hpp
--
-pcl/filters/passthrough.h
 -
 
 ../include/dirt_or_leaf/point_veg.h
-iostream
--
-pcl/io/pcd_io.h
--
 pcl/point_types.h
 -
-pcl/kdtree/kdtree_flann.h
+pcl/point_representation.h
 -
 pcl/impl/instantiate.hpp
 -
-pcl/filters/passthrough.h
--
 
 ../include/dirt_or_leaf/timer.h
+iostream
+-
+chrono
+-
 
 /home/conor/dirt_or_leaf/src/pcl_test.cpp
 dirt_or_leaf/pcl_test.h

@@ -8,8 +8,9 @@ CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/las_filtering.h
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/las_filtering.hpp
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/las_surfacing.hpp
+CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/point_2d_elevation.h
+CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/point_2d_ground.h
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/point_2d_index.h
-CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/point_2d_scale.h
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/point_las.h
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/point_veg.h
 CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o: ../include/dirt_or_leaf/timer.h

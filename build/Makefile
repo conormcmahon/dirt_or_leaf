@@ -111,6 +111,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named pcl_test
+
+# Build rule for target.
+pcl_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 pcl_test
+.PHONY : pcl_test
+
+# fast build rule for target.
+pcl_test/fast:
+	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/build
+.PHONY : pcl_test/fast
+
+#=============================================================================
 # Target rules for targets named las_surfacing
 
 # Build rule for target.
@@ -124,19 +137,6 @@ las_surfacing/fast:
 .PHONY : las_surfacing/fast
 
 #=============================================================================
-# Target rules for targets named las_filtering
-
-# Build rule for target.
-las_filtering: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 las_filtering
-.PHONY : las_filtering
-
-# fast build rule for target.
-las_filtering/fast:
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/build
-.PHONY : las_filtering/fast
-
-#=============================================================================
 # Target rules for targets named las_classifier
 
 # Build rule for target.
@@ -148,19 +148,6 @@ las_classifier: cmake_check_build_system
 las_classifier/fast:
 	$(MAKE) -f CMakeFiles/las_classifier.dir/build.make CMakeFiles/las_classifier.dir/build
 .PHONY : las_classifier/fast
-
-#=============================================================================
-# Target rules for targets named pcl_test
-
-# Build rule for target.
-pcl_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 pcl_test
-.PHONY : pcl_test
-
-# fast build rule for target.
-pcl_test/fast:
-	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/build
-.PHONY : pcl_test/fast
 
 src/las_classifier.o: src/las_classifier.cpp.o
 
@@ -188,33 +175,6 @@ src/las_classifier.s: src/las_classifier.cpp.s
 src/las_classifier.cpp.s:
 	$(MAKE) -f CMakeFiles/las_classifier.dir/build.make CMakeFiles/las_classifier.dir/src/las_classifier.cpp.s
 .PHONY : src/las_classifier.cpp.s
-
-src/las_filtering.o: src/las_filtering.cpp.o
-
-.PHONY : src/las_filtering.o
-
-# target to build an object file
-src/las_filtering.cpp.o:
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/src/las_filtering.cpp.o
-.PHONY : src/las_filtering.cpp.o
-
-src/las_filtering.i: src/las_filtering.cpp.i
-
-.PHONY : src/las_filtering.i
-
-# target to preprocess a source file
-src/las_filtering.cpp.i:
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/src/las_filtering.cpp.i
-.PHONY : src/las_filtering.cpp.i
-
-src/las_filtering.s: src/las_filtering.cpp.s
-
-.PHONY : src/las_filtering.s
-
-# target to generate assembly for a file
-src/las_filtering.cpp.s:
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/src/las_filtering.cpp.s
-.PHONY : src/las_filtering.cpp.s
 
 src/las_surfacing.o: src/las_surfacing.cpp.o
 
@@ -278,16 +238,12 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... las_surfacing"
-	@echo "... las_filtering"
-	@echo "... las_classifier"
 	@echo "... pcl_test"
+	@echo "... las_surfacing"
+	@echo "... las_classifier"
 	@echo "... src/las_classifier.o"
 	@echo "... src/las_classifier.i"
 	@echo "... src/las_classifier.s"
-	@echo "... src/las_filtering.o"
-	@echo "... src/las_filtering.i"
-	@echo "... src/las_filtering.s"
 	@echo "... src/las_surfacing.o"
 	@echo "... src/las_surfacing.i"
 	@echo "... src/las_surfacing.s"

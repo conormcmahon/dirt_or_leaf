@@ -53,10 +53,9 @@ CMAKE_BINARY_DIR = /home/conor/dirt_or_leaf/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/las_surfacing.dir/all
-all: CMakeFiles/las_filtering.dir/all
-all: CMakeFiles/las_classifier.dir/all
 all: CMakeFiles/pcl_test.dir/all
+all: CMakeFiles/las_surfacing.dir/all
+all: CMakeFiles/las_classifier.dir/all
 
 .PHONY : all
 
@@ -66,12 +65,38 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/las_surfacing.dir/clean
-clean: CMakeFiles/las_filtering.dir/clean
-clean: CMakeFiles/las_classifier.dir/clean
 clean: CMakeFiles/pcl_test.dir/clean
+clean: CMakeFiles/las_surfacing.dir/clean
+clean: CMakeFiles/las_classifier.dir/clean
 
 .PHONY : clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/pcl_test.dir
+
+# All Build rule for target.
+CMakeFiles/pcl_test.dir/all:
+	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/depend
+	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/conor/dirt_or_leaf/build/CMakeFiles --progress-num=5,6 "Built target pcl_test"
+.PHONY : CMakeFiles/pcl_test.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/pcl_test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/conor/dirt_or_leaf/build/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pcl_test.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/conor/dirt_or_leaf/build/CMakeFiles 0
+.PHONY : CMakeFiles/pcl_test.dir/rule
+
+# Convenience name for target.
+pcl_test: CMakeFiles/pcl_test.dir/rule
+
+.PHONY : pcl_test
+
+# clean rule for target.
+CMakeFiles/pcl_test.dir/clean:
+	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/clean
+.PHONY : CMakeFiles/pcl_test.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/las_surfacing.dir
@@ -80,7 +105,7 @@ clean: CMakeFiles/pcl_test.dir/clean
 CMakeFiles/las_surfacing.dir/all:
 	$(MAKE) -f CMakeFiles/las_surfacing.dir/build.make CMakeFiles/las_surfacing.dir/depend
 	$(MAKE) -f CMakeFiles/las_surfacing.dir/build.make CMakeFiles/las_surfacing.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/conor/dirt_or_leaf/build/CMakeFiles --progress-num=5,6 "Built target las_surfacing"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/conor/dirt_or_leaf/build/CMakeFiles --progress-num=3,4 "Built target las_surfacing"
 .PHONY : CMakeFiles/las_surfacing.dir/all
 
 # Build rule for subdir invocation for target.
@@ -99,33 +124,6 @@ las_surfacing: CMakeFiles/las_surfacing.dir/rule
 CMakeFiles/las_surfacing.dir/clean:
 	$(MAKE) -f CMakeFiles/las_surfacing.dir/build.make CMakeFiles/las_surfacing.dir/clean
 .PHONY : CMakeFiles/las_surfacing.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/las_filtering.dir
-
-# All Build rule for target.
-CMakeFiles/las_filtering.dir/all:
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/depend
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/conor/dirt_or_leaf/build/CMakeFiles --progress-num=3,4 "Built target las_filtering"
-.PHONY : CMakeFiles/las_filtering.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/las_filtering.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/conor/dirt_or_leaf/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/las_filtering.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/conor/dirt_or_leaf/build/CMakeFiles 0
-.PHONY : CMakeFiles/las_filtering.dir/rule
-
-# Convenience name for target.
-las_filtering: CMakeFiles/las_filtering.dir/rule
-
-.PHONY : las_filtering
-
-# clean rule for target.
-CMakeFiles/las_filtering.dir/clean:
-	$(MAKE) -f CMakeFiles/las_filtering.dir/build.make CMakeFiles/las_filtering.dir/clean
-.PHONY : CMakeFiles/las_filtering.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/las_classifier.dir
@@ -153,33 +151,6 @@ las_classifier: CMakeFiles/las_classifier.dir/rule
 CMakeFiles/las_classifier.dir/clean:
 	$(MAKE) -f CMakeFiles/las_classifier.dir/build.make CMakeFiles/las_classifier.dir/clean
 .PHONY : CMakeFiles/las_classifier.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/pcl_test.dir
-
-# All Build rule for target.
-CMakeFiles/pcl_test.dir/all:
-	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/depend
-	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/conor/dirt_or_leaf/build/CMakeFiles --progress-num=7,8 "Built target pcl_test"
-.PHONY : CMakeFiles/pcl_test.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/pcl_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/conor/dirt_or_leaf/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/pcl_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/conor/dirt_or_leaf/build/CMakeFiles 0
-.PHONY : CMakeFiles/pcl_test.dir/rule
-
-# Convenience name for target.
-pcl_test: CMakeFiles/pcl_test.dir/rule
-
-.PHONY : pcl_test
-
-# clean rule for target.
-CMakeFiles/pcl_test.dir/clean:
-	$(MAKE) -f CMakeFiles/pcl_test.dir/build.make CMakeFiles/pcl_test.dir/clean
-.PHONY : CMakeFiles/pcl_test.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

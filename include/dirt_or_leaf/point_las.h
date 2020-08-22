@@ -3,15 +3,9 @@
 #define POINT_LAS_
 #define PCL_NO_PRECOMPILE
 
-#include <iostream>
-#include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
-#include <pcl/kdtree/kdtree_flann.h>
-
+#include <pcl/point_representation.h>
 #include <pcl/impl/instantiate.hpp>
-
-#include <pcl/filters/passthrough.h>
-
 
 namespace pcl{
 
