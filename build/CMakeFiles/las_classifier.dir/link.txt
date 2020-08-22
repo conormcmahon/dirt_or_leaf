@@ -1,2 +1,0 @@
-/usr/bin/ar qc liblas_classifier.a  CMakeFiles/las_classifier.dir/src/las_classifier.cpp.o
-/usr/bin/ranlib liblas_classifier.a
