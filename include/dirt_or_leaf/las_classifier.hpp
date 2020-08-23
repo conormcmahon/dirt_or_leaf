@@ -187,7 +187,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
     GCP roughness(new GC);
     las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_decimated_, roughness, false, 10);
     if(save_outputs_)
-        outputPCD<GCP, GroundType>(roughness, "/home/conor/lidar_data/roughness.pcd", true);
+        outputPCD<GCP, GroundType>(roughness, output_directory_ + scene_name_ + std::string("roughness.pcd"), true);
 
     GCP ground_first_stage(new GC);
     for(std::size_t i=0; i<roughness->points.size(); i++)
