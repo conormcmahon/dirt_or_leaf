@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(pcl_test)
 
 # Point Cloud Library (PCL)
-find_package(PCL 1.11 REQUIRED COMPONENTS)
+find_package(PCL 1.09 REQUIRED COMPONENTS)
 include_directories(include ${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})

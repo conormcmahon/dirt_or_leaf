@@ -16,25 +16,26 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   std::cout << "Beginning LiDAR classification routine." << std::endl;
 
-  if ( argc != 7 ) // argc should be 2 for correct execution
+  if ( argc != 8 ) // argc should be 2 for correct execution
   {
     // We print argv[0] assuming it is the target file
     std::cout << "Didn't receive expected number of arguments. Usage: data/" << argv[0] << ".pdc <filename>\n";
     return -1;
   }
 
-  std::string filename = argv[1];
-  int decimation_factor = std::atoi(argv[2]);
-  double minima_radius = std::atof(argv[3]);
-  int normal_neighbors = std::atoi(argv[4]);
-  int roughness_neighbors = std::atoi(argv[5]);
-  float min_veg_height = std::atoi(argv[6]);
+  std::string directory = argv[1];
+  std::string filename = argv[2];
+  int decimation_factor = std::atoi(argv[3]);
+  double minima_radius = std::atof(argv[4]);
+  int normal_neighbors = std::atoi(argv[5]);
+  int roughness_neighbors = std::atoi(argv[6]);
+  float min_veg_height = std::atoi(argv[7]);
 
   Timer total_timer("total time");
   // Perform Classification 
   LASClassifier<pcl::PointLAS , pcl::PointVeg, pcl::Point2DGround> classifier(true);
-  classifier.loadLASPCD(filename + std::string(".pcd"));
-  classifier.setOutputOptions(true, "/home/conor/lidar_data/", filename);
+  classifier.loadLASPCD(directory + filename + std::string(".pcd"));
+  classifier.setOutputOptions(true, directory, filename);
   classifier.decimateToMinima(decimation_factor, true);
   classifier.curvatureAnalysis(normal_neighbors, roughness_neighbors);
   classifier.extractVegetation(min_veg_height);
