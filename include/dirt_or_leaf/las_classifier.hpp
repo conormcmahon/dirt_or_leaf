@@ -218,7 +218,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
         outputPCD<GCP, GroundType>(ground_filtered_, output_directory_ + scene_name_ + std::string("ground_filtered.pcd"), true);
     roughness_second_timer.stop(timekeeping_);
     if(debugging_)
-        std::cout << "Following first round of filtering using roughness, " << ground_filtered_->points.size() << " points remain." << std::endl;
+        std::cout << "Following second round of filtering using roughness, " << ground_filtered_->points.size() << " points remain." << std::endl;
     
     // Construct KdTree search object on new ground cloud
     Timer ground_tree_setup_timer("setup for ground KdTree");
