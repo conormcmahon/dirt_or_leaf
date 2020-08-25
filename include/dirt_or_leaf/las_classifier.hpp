@@ -180,14 +180,14 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
     
     las_filtering::estimateNormals<pcl::PointCloud<pcl::PointXYZI>::Ptr, GCP, pcl::PointXYZI, GroundType>(ground_decimated_temp, ground_decimated_, true, float(num_neighbors), true);
     if(save_outputs_)
-        outputPCD<GCP, GroundType>(ground_decimated_, output_directory_ + scene_name_ + std::string("normals.pcd"), true);
+        outputPCD<GCP, GroundType>(ground_decimated_, output_directory_ + scene_name_ + std::string("_normals.pcd"), true);
     normals_timer.stop(timekeeping_);
 
     Timer roughness_timer("roughness stage one");
     GCP roughness(new GC);
     las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_decimated_, roughness, false, 10);
     if(save_outputs_)
-        outputPCD<GCP, GroundType>(roughness, output_directory_ + scene_name_ + std::string("roughness.pcd"), true);
+        outputPCD<GCP, GroundType>(roughness, output_directory_ + scene_name_ + std::string("_roughness.pcd"), true);
 
     GCP ground_first_stage(new GC);
     for(std::size_t i=0; i<roughness->points.size(); i++)
@@ -197,7 +197,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
                 ground_first_stage->push_back(roughness->points[i]);
     }
     if(save_outputs_)
-        outputPCD<GCP, GroundType>(ground_first_stage, output_directory_ + scene_name_ + std::string("roughness_filter.pcd"), true);
+        outputPCD<GCP, GroundType>(ground_first_stage, output_directory_ + scene_name_ + std::string("_roughness_filter.pcd"), true);
     roughness_timer.stop(timekeeping_);
     if(debugging_)
         std::cout << "Following first round of filtering using roughness, " << ground_first_stage->points.size() << " points remain." << std::endl;
@@ -206,7 +206,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
     GCP roughness_second(new GC);
     las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_first_stage, roughness_second, false, 10);
     if(save_outputs_)
-        outputPCD<GCP, GroundType>(roughness_second, output_directory_ + scene_name_ + std::string("roughness_second.pcd"), true);
+        outputPCD<GCP, GroundType>(roughness_second, output_directory_ + scene_name_ + std::string("_roughness_second.pcd"), true);
 
     for(std::size_t i=0; i<roughness_second->points.size(); i++)
     {
@@ -215,7 +215,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
                 ground_filtered_->push_back(roughness_second->points[i]);
     }
     if(save_outputs_)
-        outputPCD<GCP, GroundType>(ground_filtered_, output_directory_ + scene_name_ + std::string("ground_filtered.pcd"), true);
+        outputPCD<GCP, GroundType>(ground_filtered_, output_directory_ + scene_name_ + std::string("_ground_filtered.pcd"), true);
     roughness_second_timer.stop(timekeeping_);
     if(debugging_)
         std::cout << "Following second round of filtering using roughness, " << ground_filtered_->points.size() << " points remain." << std::endl;
@@ -253,7 +253,7 @@ void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_he
     if(debugging_)
         std::cout << "Finished extracting vegetation, with " << vegetation_->points.size() << " points in total." << std::endl; 
     if(save_outputs_)
-        outputPCD<VCP, VegType>(vegetation_, output_directory_ + scene_name_ + std::string("vegetation.pcd"), true);
+        outputPCD<VCP, VegType>(vegetation_, output_directory_ + scene_name_ + std::string("_vegetation.pcd"), true);
 
     vegetation_timer.stop(timekeeping_);
 }
