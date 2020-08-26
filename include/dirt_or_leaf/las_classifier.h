@@ -88,10 +88,10 @@ private:
 
     // Output in 2D
     template <typename CloudType, typename PointType>
-    void outputPCD(CloudType cloud, std::string filename, bool ascii=true);
+    void outputPCD(CloudType cloud, std::string filename, bool binary=true);
     // Output in Original Data Type 
     template <typename CloudType, typename Cloud2DType, typename PointType>
-    void outputPCD(CloudType data, Cloud2DType cloud, std::string filename, bool ascii=true);
+    void outputPCD(CloudType data, Cloud2DType cloud, std::string filename, bool binary=true);
 
   // Timekeeping
     float loading_time_;

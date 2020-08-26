@@ -62,7 +62,9 @@ int LASClassifier<LASType, VegType, GroundType>::loadLASPCD(std::string filename
     if(demean_)
     {
         Timer demeaning("Demeaning");
-        las_filtering::deMeanCloud<LCP>(input_las_);
+        Eigen::Vector3d mean_coords = las_filtering::deMeanCloud<LCP>(input_las_);
+        if(debugging_)
+            std::cout << "  Demeaning process yielded mean values of X: " << mean_coords[0] << "  Y: " << mean_coords[1] << "  Z: " << mean_coords[2] << std::endl;
         demeaning.stop(timekeeping_);
     }
     pcl::copyPointCloud3D<LCP, GCP>(input_las_, input_las_flattened_);
@@ -118,15 +120,15 @@ void LASClassifier<LASType, VegType, GroundType>::setOutputOptions(bool save_out
 // Output a Point Cloud to PCD
 template <typename LASType, typename VegType, typename GroundType>           // Class Template
 template <typename CloudType, typename PointType>       // Member Function Template
-void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType cloud, std::string filename, bool ascii)
+void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType cloud, std::string filename, bool binary)
 { 
     pcl::PCDWriter writer;
-    writer.write<PointType>(filename, *cloud, ascii);
+    writer.write<PointType>(filename, *cloud, binary);
 }
 // Output a Point Cloud to PCD (using indices)
 template <typename LASType, typename VegType, typename GroundType>           // Class Template
 template <typename CloudType, typename Cloud2DType, typename PointType>       // Member Function Template
-void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType data, Cloud2DType cloud, std::string filename, bool ascii)
+void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType data, Cloud2DType cloud, std::string filename, bool binary)
 {
     // Create data cloud at given indices
     LCP output(new LC);
@@ -134,7 +136,7 @@ void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType data, Clou
         output->points.push_back(data->points[cloud->points[i].index]);
 
     pcl::PCDWriter writer;
-    writer.write<PointType>(filename, *output, ascii);
+    writer.write<PointType>(filename, *output, binary);
 }
 
 

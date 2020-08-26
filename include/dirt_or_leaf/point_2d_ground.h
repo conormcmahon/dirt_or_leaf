@@ -26,7 +26,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::Point2DGround,
                                   (float, x, x)
                                   (float, y, y)
                                   (float, z, z)
-                                  (float, intensity, intesnity)
+                                  (float, intensity, intensity)
                                   (float, normal_x, normal_x)
                                   (float, normal_y, normal_y)
                                   (float, normal_z, normal_z)
