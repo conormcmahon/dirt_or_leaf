@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
   // Perform Classification 
   LASClassifier<pcl::PointLAS , pcl::PointVeg, pcl::Point2DGround> classifier(true);
   classifier.loadLASPCD(directory + filename + std::string(".pcd"));
-  classifier.setOutputOptions(true, directory, filename);
+  classifier.setOutputOptions(true, directory + "output/", filename);
   classifier.decimateToMinima(decimation_factor, true);
   classifier.curvatureAnalysis(normal_neighbors, roughness_neighbors);
   classifier.extractVegetation(min_veg_height);
