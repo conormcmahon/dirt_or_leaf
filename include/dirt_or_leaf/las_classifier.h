@@ -67,6 +67,7 @@ private:
     GCP ground_;
     // Vegetation Cloud
     VCP vegetation_;
+    VCP vegetation_decimated_;
   // Search Trees on Clouds
     // 3D Search Trees
     Tree3DP input_las_tree_;

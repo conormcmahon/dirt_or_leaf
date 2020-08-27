@@ -27,9 +27,13 @@ namespace las_filtering{
     // Reduce cloud density, keeping only one local *minimum* point for every DECIMATION_FACTOR points
     template <typename CloudType, typename Cloud2DType, typename PointType> 
     void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor);
+    template <typename CloudType, typename PointType> 
+    void decimateToMinima(CloudType input, CloudType output, int decimation_factor);
     // Reduce cloud density, keeping only one local *maximum* point for every DECIMATION_FACTOR points
     template <typename CloudType, typename Cloud2DType, typename PointType> 
     void decimateToMaxima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor);
+    template <typename CloudType, typename PointType> 
+    void decimateToMaxima(CloudType input, CloudType output, int decimation_factor);
 
     // Estimate Cloud Normals
     template <typename CloudType, typename CloudNormalsType, typename PointType, typename NormalsType> 

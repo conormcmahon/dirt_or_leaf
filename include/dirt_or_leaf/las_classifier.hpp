@@ -31,6 +31,7 @@ void LASClassifier<LASType, VegType, GroundType>::initializeClouds(){
     ground_filtered_.reset(new GC());
     ground_.reset(new GC());
     vegetation_.reset(new VC());
+    vegetation_decimated_.reset(new VC());
     // Initialize Point Cloud Smart Pointer Targets
     input_las_tree_.reset(new Tree3D());
     input_tree_.reset(new Tree2D());
@@ -168,21 +169,15 @@ void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimatio
 template <typename LASType, typename VegType, typename GroundType> 
 void LASClassifier<LASType, VegType, GroundType>::decimateVegetation(int decimation_factor, bool return_information)
 {
-//    if(debugging_)
-//        std::cout << "Performing cloud decimation with factor " << decimation_factor << ". Initial cloud size: " << vegetation_->points.size() << std::endl;
-//    Timer timer("decimation");
-//    las_filtering::decimateToMinima<LCP, GCP, GroundType>(vegetation_, input_las_flattened_, ground_decimated_, decimation_factor);
-//    if(return_information)
-//    {
-//        GCP last_returns(new GC);
-//        las_filtering::filterToLastReturn<LCP, GCP>(input_las_, ground_decimated_, last_returns);
-//        *ground_decimated_ = *last_returns;
-//    }
-//    if(debugging_)
-//        std::cout << "Finished decimation. Writing " << ground_decimated_->points.size() << " to   " << output_directory_ + scene_name_ + std::string("_decimated.pcd") << std::endl;
-//    if(save_outputs_)
-//        outputPCD<LCP, GCP, LASType>(input_las_, ground_decimated_, output_directory_ + scene_name_ + std::string("_decimated.pcd"), true);
-//    veg_decimation_time_ = timer.stop(timekeeping_);
+    if(debugging_)
+        std::cout << "Performing cloud decimation with factor " << decimation_factor << ". Initial cloud size: " << vegetation_->points.size() << std::endl;
+    Timer timer("decimation");
+    las_filtering::decimateToMaxima<VCP, VegType>(vegetation_, vegetation_decimated_, decimation_factor);
+    if(debugging_)
+        std::cout << "Finished decimation. Writing " << vegetation_decimated_->points.size() << " to   " << output_directory_ + scene_name_ + std::string("_vegetation_decimated.pcd") << std::endl;
+    if(save_outputs_)
+        outputPCD<VCP, VegType>(vegetation_decimated_, output_directory_ + scene_name_ + std::string("_vegetation_decimated.pcd"), true);
+    veg_decimation_time_ = timer.stop(timekeeping_);
 }
 
 

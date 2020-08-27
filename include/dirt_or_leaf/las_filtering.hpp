@@ -102,6 +102,47 @@ void decimateToMinima(CloudType input, CloudType output, int decimation_factor)
 }
 
 
+template <typename CloudType, typename PointType> 
+void decimateToMaxima(CloudType input, CloudType output, int decimation_factor)
+{
+     // Stores whether each input point is a minimum
+    std::vector<bool> retained_after_decimation(input->points.size(), true);
+    pcl::KdTreeFLANN<PointType> search_tree;
+    search_tree.setInputCloud(input);
+    for(std::size_t i=0; i<input->points.size(); i++)
+    {
+        // Disqualify points which we've already found to be higher than a neighbor
+        if(!retained_after_decimation[i])
+            continue;
+
+        PointType putative_minimum = input->points[i];
+        // Find all neighbors of source point in input cloud
+        std::vector<int> nearest_indices;
+        std::vector<float> nearest_dists;
+        search_tree.nearestKSearch(putative_minimum, decimation_factor+1, nearest_indices, nearest_dists);
+
+        // Check whether putative minimum is a minimum within its neighborhood
+        for(int neighbor_ind=0; neighbor_ind<nearest_indices.size(); neighbor_ind++)
+        {
+            // Skip self
+            if(i == nearest_indices[neighbor_ind])
+                continue;
+            // If Source is higher than Target, and therefore NOT a minimum
+            if(input->points[i].z < input->points[nearest_indices[neighbor_ind]].z)  
+            {
+                retained_after_decimation[i] = false;
+                break;
+            }
+            else // Target is higher than Source, and therefore NOT a minimum 
+                retained_after_decimation[nearest_indices[neighbor_ind]] = false;
+        }
+        // Aggregate points if they're still a minimum after the above check 
+        if(retained_after_decimation[i])
+            output->points.push_back(putative_minimum);
+    }
+    output->width = 1;
+    output->height = output->points.size();
+}
 
 // Assuming both input and output clouds have information on 
 template <typename CloudType> 
