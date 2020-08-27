@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   std::cout << "Beginning LiDAR classification routine." << std::endl;
 
-  if ( argc != 8 ) // argc should be 2 for correct execution
+  if ( argc != 9 ) // argc should be 2 for correct execution
   {
     // We print argv[0] assuming it is the target file
     std::cout << "Didn't receive expected number of arguments. Usage: data/" << argv[0] << ".pdc <filename>\n";
@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
   int normal_neighbors = std::atoi(argv[5]);
   int roughness_neighbors = std::atoi(argv[6]);
   float min_veg_height = std::atoi(argv[7]);
+  float decimation_factor_veg = std::atoi(argv[8]);
 
   Timer total_timer("total time");
   // Perform Classification 
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
   classifier.decimateToMinima(decimation_factor, true);
   classifier.curvatureAnalysis(normal_neighbors, roughness_neighbors);
   classifier.extractVegetation(min_veg_height);
+  classifier.decimateVegetation(decimation_factor_veg, true);
 
   total_timer.stop();
 

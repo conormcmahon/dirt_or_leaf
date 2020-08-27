@@ -49,7 +49,7 @@ public:
     void setOutputOptions(bool save_outputs, std::string output_director="", std::string scene_name="");
     // Filter to Ground
     void decimateToMinima(int decimation_factor, bool return_information);
-    void decimateToMaxima(int decimation_factor, bool return_information);
+    void decimateVegetation(int decimation_factor, bool return_information);
     void curvatureAnalysis(int num_neighbors, int roughness_neighbors);
     // Vegetation Extraction
     void extractVegetation(float min_height);
@@ -99,6 +99,7 @@ private:
     float decimation_time_;
     float ground_filter_time_;
     float upsampling_time_;
+    float veg_decimation_time_;
 
 };
 

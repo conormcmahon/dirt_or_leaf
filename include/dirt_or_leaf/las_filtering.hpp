@@ -231,20 +231,14 @@ Eigen::Vector3d deMeanCloud(CloudType cloud)
 template <typename CloudType, typename SourcePointType, typename KdTreeType>
 float relativePointHeight(CloudType cloud, SourcePointType point, KdTreeType tree, int num_neighbors)
 {
-//   std::cout << " got a point in here! " << num_neighbors << " " << point.x << " " << point.y << " " << point.z << " " << cloud->points.size() << std::endl;
-//   std::cin.get();
    std::vector<int> indices;
    std::vector<float> dists;
    tree->nearestKSearch(point, num_neighbors, indices, dists);
 
    float total_weighted_height_diff = 0;
    float total_inverse_distance = 0;
-//
-//   std::cout << " and here! " << indices.size() << std::endl;
-//   std::cin.get();
-///    std::cout << " and here! " << indices[0] << " " cloud->points << std::endl;
-//   std::cin.get();
-    for(std::size_t i; i<indices.size(); i++)
+
+    for(std::size_t i=0; i<indices.size(); i++)
     {
         Eigen::Vector2f xy_vector_between_points;
         xy_vector_between_points << (point.x - cloud->points[indices[i]].x),

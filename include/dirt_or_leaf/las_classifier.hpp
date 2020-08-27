@@ -57,7 +57,7 @@ int LASClassifier<LASType, VegType, GroundType>::loadLASPCD(std::string filename
         std::cout << "\nCouldn't read file data/" << filename << std::endl;
         return (-1);
     }
-    std::cout << "Loaded " << input_las_->width * input_las_->height << " data points from data/" << filename << std::endl;
+    std::cout << "Loaded " << input_las_->width * input_las_->height << " data points from " << filename << std::endl;
     cloud_loading_timer.stop(timekeeping_);
     if(demean_)
     {
@@ -166,10 +166,23 @@ void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimatio
 
 // Decimate point cloud, keeping only the HIGHEST point within each group of DECIMATION_FACTOR points
 template <typename LASType, typename VegType, typename GroundType> 
-void LASClassifier<LASType, VegType, GroundType>::decimateToMaxima(int decimation_factor, bool return_information)
+void LASClassifier<LASType, VegType, GroundType>::decimateVegetation(int decimation_factor, bool return_information)
 {
-
-
+//    if(debugging_)
+//        std::cout << "Performing cloud decimation with factor " << decimation_factor << ". Initial cloud size: " << vegetation_->points.size() << std::endl;
+//    Timer timer("decimation");
+//    las_filtering::decimateToMinima<LCP, GCP, GroundType>(vegetation_, input_las_flattened_, ground_decimated_, decimation_factor);
+//    if(return_information)
+//    {
+//        GCP last_returns(new GC);
+//        las_filtering::filterToLastReturn<LCP, GCP>(input_las_, ground_decimated_, last_returns);
+//        *ground_decimated_ = *last_returns;
+//    }
+//    if(debugging_)
+//        std::cout << "Finished decimation. Writing " << ground_decimated_->points.size() << " to   " << output_directory_ + scene_name_ + std::string("_decimated.pcd") << std::endl;
+//    if(save_outputs_)
+//        outputPCD<LCP, GCP, LASType>(input_las_, ground_decimated_, output_directory_ + scene_name_ + std::string("_decimated.pcd"), true);
+//    veg_decimation_time_ = timer.stop(timekeeping_);
 }
 
 
