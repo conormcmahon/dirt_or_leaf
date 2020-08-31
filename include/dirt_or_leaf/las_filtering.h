@@ -55,7 +55,10 @@ namespace las_filtering{
     // De-Meaning 
     template <typename CloudType>
     Eigen::Vector3d deMeanCloud(CloudType cloud);
-
+    template <typename CloudType>
+    void reMeanCloud(CloudType cloud, Eigen::Vector3d mmean_coords);
+    template <typename CloudType>
+    void reMeanCloud(CloudType input, CloudType output, Eigen::Vector3d mean_coords);
 
     // Relative Point Height
     template <typename CloudType, typename SourcePointType, typename KdTreeType>

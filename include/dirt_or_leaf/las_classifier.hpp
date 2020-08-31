@@ -9,16 +9,18 @@ LASClassifier<LASType, VegType, GroundType>::LASClassifier(){
     timekeeping_ = true;
     debugging_ = true;
     save_outputs_ = false;
-    demean_ = false;
+    demean_ = true;
+    remean_ = true;
     initializeClouds();
 }
 
 template <typename LASType, typename VegType, typename GroundType> 
-LASClassifier<LASType, VegType, GroundType>::LASClassifier(bool demean){
+LASClassifier<LASType, VegType, GroundType>::LASClassifier(bool demean, bool remean){
     timekeeping_ = true;
     debugging_ = true;
     save_outputs_ = false;
     demean_ = demean;
+    remean_ = remean;
     initializeClouds();
 }
 
@@ -38,6 +40,8 @@ void LASClassifier<LASType, VegType, GroundType>::initializeClouds(){
     ground_decimated_tree_.reset(new Tree2D());
     ground_filtered_tree_.reset(new Tree2D());
     ground_tree_.reset(new Tree2D());
+    // Offset for XYZ Coordinates (to de-mean) - initialize to zero
+    offset_ << 0, 0, 0;
 }
 
 
@@ -63,9 +67,9 @@ int LASClassifier<LASType, VegType, GroundType>::loadLASPCD(std::string filename
     if(demean_)
     {
         Timer demeaning("Demeaning");
-        Eigen::Vector3d mean_coords = las_filtering::deMeanCloud<LCP>(input_las_);
+        offset_ = las_filtering::deMeanCloud<LCP>(input_las_);
         if(debugging_)
-            std::cout << "  Demeaning process yielded mean values of X: " << mean_coords[0] << "  Y: " << mean_coords[1] << "  Z: " << mean_coords[2] << std::endl;
+            std::cout << "  Demeaning process yielded mean values of X: " << offset_[0] << "  Y: " << offset_[1] << "  Z: " << offset_[2] << std::endl;
         demeaning.stop(timekeeping_);
     }
     pcl::copyPointCloud3D<LCP, GCP>(input_las_, input_las_flattened_);
@@ -102,9 +106,11 @@ void LASClassifier<LASType, VegType, GroundType>::setDebugging(bool debugging)
 }
 // Set whether to output saved PCD cloud files
 template <typename LASType, typename VegType, typename GroundType> 
-void LASClassifier<LASType, VegType, GroundType>::setOutputOptions(bool save_outputs, std::string output_directory, std::string scene_name)
+void LASClassifier<LASType, VegType, GroundType>::setOutputOptions(bool save_outputs, std::string output_directory, std::string scene_name, bool demean, bool remean)
 {
     save_outputs_ =  save_outputs;
+    demean_ = demean;
+    remean_ = remean;
     if(!save_outputs_)
         return;
     output_directory_ = output_directory;
@@ -124,7 +130,16 @@ template <typename CloudType, typename PointType>       // Member Function Templ
 void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType cloud, std::string filename, bool binary)
 { 
     pcl::PCDWriter writer;
-    writer.write<PointType>(filename, *cloud, binary);
+    // Re-apply XYZ offset that was temporarily removed for computational reasons
+    if(remean_)
+    {
+        CloudType cloud_offset(new pcl::PointCloud<PointType>);
+        //cloud.reset();
+        las_filtering::reMeanCloud(cloud, cloud_offset, offset_);
+        writer.write<PointType>(filename, *cloud_offset, binary);
+    }
+    else
+        writer.write<PointType>(filename, *cloud, binary);
 }
 // Output a Point Cloud to PCD (using indices)
 template <typename LASType, typename VegType, typename GroundType>           // Class Template
@@ -135,9 +150,17 @@ void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType data, Clou
     LCP output(new LC);
     for(std::size_t i=0; i<cloud->points.size(); i++)
         output->points.push_back(data->points[cloud->points[i].index]);
-
     pcl::PCDWriter writer;
-    writer.write<PointType>(filename, *output, binary);
+    // Re-apply XYZ offset that was temporarily removed for computational reasons
+    if(remean_)
+    {
+        CloudType cloud_offset(new pcl::PointCloud<PointType>);
+        //cloud.reset();
+        las_filtering::reMeanCloud(output, cloud_offset, offset_);
+        writer.write<LASType>(filename, *cloud_offset, binary);
+    }
+    else
+        writer.write<LASType>(filename, *output, binary);
 }
 
 
@@ -195,7 +218,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
 
     Timer roughness_timer("roughness stage one");
     GCP roughness(new GC);
-    las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_decimated_, roughness, false, 10);
+    las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_decimated_, roughness, false, roughness_neighbors);
     if(save_outputs_)
         outputPCD<GCP, GroundType>(roughness, output_directory_ + scene_name_ + std::string("_roughness.pcd"), true);
 
@@ -214,7 +237,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
         
     Timer roughness_second_timer("roughness stage two");
     GCP roughness_second(new GC);
-    las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_first_stage, roughness_second, false, 10);
+    las_filtering::estimateRoughness<GCP, GCP, GroundType>(ground_first_stage, roughness_second, false, roughness_neighbors);
     if(save_outputs_)
         outputPCD<GCP, GroundType>(roughness_second, output_directory_ + scene_name_ + std::string("_roughness_second.pcd"), true);
 

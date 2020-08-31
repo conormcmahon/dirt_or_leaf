@@ -34,7 +34,7 @@ public:
 
   // Constructors
     LASClassifier();
-    LASClassifier(bool demean);
+    LASClassifier(bool demean, bool remean);
 
   // Initializing Helper Functions
     void initializeClouds();
@@ -46,7 +46,7 @@ public:
     void setVerbosity(bool verbosity);
     void setTimekeeping(bool timekeeping);
     void setDebugging(bool debugging);
-    void setOutputOptions(bool save_outputs, std::string output_director="", std::string scene_name="");
+    void setOutputOptions(bool save_outputs, std::string output_directory, std::string scene_name, bool demean=true, bool remean=true);
     // Filter to Ground
     void decimateToMinima(int decimation_factor, bool return_information);
     void decimateVegetation(int decimation_factor, bool return_information);
@@ -77,8 +77,11 @@ private:
     Tree2DP ground_filtered_tree_;
     Tree2DP ground_tree_;
 
-  // Should cloud be de-meaned and scaled in XYZ to prevent overflow for very large coordinate systems? 
+  // Should cloud be de-meaned and to prevent overflow for very large coordinate systems? 
     bool demean_;
+  // Should the cloud be re-meaned and moved back to its original coordinates before being output?  
+    bool remean_; 
+    Eigen::Vector3d offset_;
 
   // Output Options
     bool timekeeping_;

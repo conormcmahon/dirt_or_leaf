@@ -262,6 +262,28 @@ Eigen::Vector3d deMeanCloud(CloudType cloud)
 }
 
 
+template <typename CloudType>
+void reMeanCloud(CloudType cloud, Eigen::Vector3d mean_coords)
+{
+    for(std::size_t i; i<cloud->points.size(); i++)
+    {
+        cloud->points[i].x = float(cloud->points[i].x + mean_coords[0]);
+        cloud->points[i].y = float(cloud->points[i].y + mean_coords[1]);
+        cloud->points[i].z = float(cloud->points[i].z + mean_coords[2]);
+    }  
+}
+template <typename CloudType>
+void reMeanCloud(CloudType input, CloudType output, Eigen::Vector3d mean_coords)
+{
+    *output = *input;
+    for(std::size_t i; i<input->points.size(); i++)
+    {
+        output->points[i].x = float(input->points[i].x + mean_coords[0]);
+        output->points[i].y = float(input->points[i].y + mean_coords[1]);
+        output->points[i].z = float(input->points[i].z + mean_coords[2]);
+    }  
+}
+
 
 // Get point height as inverse-square-distance-weighted difference between point z-value and z-value of NUM_NEIGHBORS points
 //   Distance for weighting is evaluated in 2D (XY)
