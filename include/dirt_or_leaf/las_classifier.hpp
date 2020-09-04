@@ -40,6 +40,8 @@ void LASClassifier<LASType, VegType, GroundType>::initializeClouds(){
     ground_decimated_tree_.reset(new Tree2D());
     ground_filtered_tree_.reset(new Tree2D());
     ground_tree_.reset(new Tree2D());
+    // TIN Structure
+    TIN_data_ = GroundTIN<GroundType>();
     // Offset for XYZ Coordinates (to de-mean) - initialize to zero
     offset_ << 0, 0, 0;
 }
@@ -119,6 +121,8 @@ void LASClassifier<LASType, VegType, GroundType>::setOutputOptions(bool save_out
         std::cout << "[LASClassifier] Warning - instructed to save output clouds, but no output directory string provided.";
     if(scene_name.length() < 1)
         std::cout << "[LASClassifier] Warning - instructed to save output clouds, but no output directory string provided.";
+    if(debugging_)
+        std::cout << "Loaded output options. File directory: " << output_directory << "   Scene name: " << scene_name << std::endl;
 }
 
 
@@ -260,14 +264,44 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
 }
 
 
-
+// Height assessment based on inverse distance weighted neareest neighbor search in cloud
 template <typename LASType, typename VegType, typename GroundType> 
-void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_height)
+void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_height, int num_neighbors)
 {
     Timer vegetation_timer("vegetation extraction");
     for(std::size_t i=0; i<input_las_->points.size(); i++)
     {
-        float height = las_filtering::relativePointHeight<GCP, GroundType, Tree2DP>(ground_filtered_, input_las_flattened_->points[i], ground_filtered_tree_, 3);
+        float height = las_filtering::relativePointHeight<GCP, GroundType, Tree2DP>(ground_filtered_, input_las_flattened_->points[i], ground_filtered_tree_, num_neighbors);
+        if(height > min_height)
+        {
+            VegType point;
+            point.x = input_las_->points[i].x;
+            point.y = input_las_->points[i].y;
+            point.z = input_las_->points[i].z;
+            point.intensity = input_las_->points[i].intensity;
+            point.height = height;
+
+            vegetation_->points.push_back(point);
+        }
+    }
+    vegetation_->width = 1;
+    vegetation_->height = vegetation_->points.size();    
+
+    if(debugging_)
+        std::cout << "Finished extracting vegetation, with " << vegetation_->points.size() << " points in total." << std::endl; 
+    if(save_outputs_)
+        outputPCD<VCP, VegType>(vegetation_, output_directory_ + scene_name_ + std::string("_vegetation.pcd"), true);
+
+    vegetation_timer.stop(timekeeping_);
+}
+// Search based on TIN
+template <typename LASType, typename VegType, typename GroundType> 
+void LASClassifier<LASType, VegType, GroundType>::extractVegetationTIN(float min_height)
+{
+    Timer vegetation_timer("vegetation extraction");
+    for(std::size_t i=0; i<input_las_->points.size(); i++)
+    {
+        float height = TIN_data_.getPointHeight(ground_filtered_, input_las_flattened_->points[i]);
         if(height > min_height)
         {
             VegType point;
@@ -292,3 +326,14 @@ void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_he
 }
 
 
+
+template <typename LASType, typename VegType, typename GroundType> 
+void LASClassifier<LASType, VegType, GroundType>::buildGroundTIN()
+{
+    Timer TIN_timer("TIN generation");
+    TIN_data_.setInputCloud(ground_filtered_, ground_filtered_tree_);
+    TIN_data_.generateTIN();
+    TIN_time_ = TIN_timer.stop(timekeeping_);
+    if(save_outputs_)
+        TIN_data_.saveTIN(output_directory_ + scene_name_ + std::string("_triangles.ply"), remean_, offset_);
+}

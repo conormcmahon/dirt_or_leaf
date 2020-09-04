@@ -316,5 +316,17 @@ float relativePointHeight(CloudType cloud, SourcePointType point, KdTreeType tre
 }
 
 
+// Get point height as simple height difference above containing TIN triangle
+//   Distance for weighting is evaluated in 2D (XY)
+//   Nearest neighbors are in the search space of KdTreeType
+//   Generally, should choose a search tree type that is 2D as well
+// Is there a safer way to handle inverse distance weighting to prevent overflow for very close (or coincident) points?
+//   Maybe some kind of fixed Mexican Hat-style wavelet kernel? 
+template <typename CloudType, typename SourcePointType>
+float relativePointHeight(CloudType cloud, SourcePointType point, las_triangulation::Delaunay &ground)
+{
+    return las_triangulation::pointHeight(cloud, point, ground);
+}
+
 
 }

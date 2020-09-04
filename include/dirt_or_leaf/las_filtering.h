@@ -5,6 +5,7 @@
 // Dirt_Or_Leaf includes
 #include <dirt_or_leaf/las_conversions.h>
 #include <dirt_or_leaf/timer.h>
+#include <dirt_or_leaf/las_triangulation.h>
 
 // PCL SAC Segmentation (Plane)
 #include <pcl/ModelCoefficients.h>
@@ -61,8 +62,12 @@ namespace las_filtering{
     void reMeanCloud(CloudType input, CloudType output, Eigen::Vector3d mean_coords);
 
     // Relative Point Height
+    //   Compared to another cloud
     template <typename CloudType, typename SourcePointType, typename KdTreeType>
     float relativePointHeight(CloudType cloud, SourcePointType point, KdTreeType tree, int num_neighbors);
+    //   Compared to TIN surface
+    template <typename CloudType, typename SourcePointType>
+    float relativePointHeight(CloudType cloud, SourcePointType point, las_triangulation::Delaunay &ground);
 }
 
 //std::vector<int> getNeighbors(pcl::Point2DIndex source, SCP target, bool keep_self=false);

@@ -2,9 +2,9 @@
 #ifndef LAS_CLASSIFIER_
 #define LAS_CLASSIFIER_
 
-#include <dirt_or_leaf/las_filtering.hpp>
 #include <dirt_or_leaf/las_surfacing.hpp>
 #include <dirt_or_leaf/las_conversions.hpp>
+#include <dirt_or_leaf/ground_tin.hpp>
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/vtk_io.h>
@@ -31,6 +31,8 @@ public:
     // 2D Search on Ground 
     typedef typename pcl::KdTreeFLANN<GroundType> Tree2D;
     typedef typename pcl::KdTreeFLANN<GroundType>::Ptr Tree2DP;
+  // Ground TIN Information
+    //typedef typename GroundTIN<GroundType> TIN;
 
   // Constructors
     LASClassifier();
@@ -51,8 +53,10 @@ public:
     void decimateToMinima(int decimation_factor, bool return_information);
     void decimateVegetation(int decimation_factor, bool return_information);
     void curvatureAnalysis(int num_neighbors, int roughness_neighbors);
+    void buildGroundTIN();
     // Vegetation Extraction
-    void extractVegetation(float min_height);
+    void extractVegetation(float min_height, int num_neighbors);
+    void extractVegetationTIN(float min_height);
 
 
 private:
@@ -65,6 +69,7 @@ private:
     GCP ground_filtered_;
     // Final ground cloud (after re-adding excluded points)
     GCP ground_;
+    GroundTIN<GroundType> TIN_data_;
     // Vegetation Cloud
     VCP vegetation_;
     VCP vegetation_decimated_;
@@ -76,6 +81,8 @@ private:
     Tree2DP ground_decimated_tree_;
     Tree2DP ground_filtered_tree_;
     Tree2DP ground_tree_;
+
+    
 
   // Should cloud be de-meaned and to prevent overflow for very large coordinate systems? 
     bool demean_;
@@ -102,6 +109,7 @@ private:
     float preprocessing_time_;
     float decimation_time_;
     float ground_filter_time_;
+    float TIN_time_;
     float upsampling_time_;
     float veg_decimation_time_;
 

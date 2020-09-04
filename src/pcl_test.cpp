@@ -39,7 +39,8 @@ int main(int argc, char *argv[])
   classifier.setOutputOptions(true, directory + "output/", filename, true, true);
   classifier.decimateToMinima(decimation_factor, true);
   classifier.curvatureAnalysis(normal_neighbors, roughness_neighbors);
-  classifier.extractVegetation(min_veg_height);
+  classifier.buildGroundTIN();
+  classifier.extractVegetationTIN(min_veg_height);
   classifier.decimateVegetation(decimation_factor_veg, true);
 
   total_timer.stop();
