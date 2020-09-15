@@ -215,7 +215,7 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
     pcl::PointCloud<pcl::PointXYZI>::Ptr ground_decimated_temp(new pcl::PointCloud<pcl::PointXYZI>);
     pcl::copyPointCloud3D<GCP, pcl::PointCloud<pcl::PointXYZI>::Ptr>(ground_decimated_, ground_decimated_temp);
     
-    las_filtering::estimateNormals<pcl::PointCloud<pcl::PointXYZI>::Ptr, GCP, pcl::PointXYZI, GroundType>(ground_decimated_temp, ground_decimated_, true, float(num_neighbors), true);
+    las_filtering::estimateNormals<pcl::PointCloud<pcl::PointXYZI>::Ptr, GCP, pcl::PointXYZI, GroundType>(ground_decimated_temp, ground_decimated_, true, num_neighbors, true);
     if(save_outputs_)
         outputPCD<GCP, GroundType>(ground_decimated_, output_directory_ + scene_name_ + std::string("_normals.pcd"), true);
     normals_timer.stop(timekeeping_);

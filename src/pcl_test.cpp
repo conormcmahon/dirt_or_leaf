@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
   std::string filename = argv[2];
   int decimation_factor = std::atoi(argv[3]);
   double minima_radius = std::atof(argv[4]);
-  int normal_neighbors = std::atoi(argv[5]);
+  float normals_radius = std::atoi(argv[5]);
   int roughness_neighbors = std::atoi(argv[6]);
   float min_veg_height = std::atoi(argv[7]);
   float decimation_factor_veg = std::atoi(argv[8]);
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   classifier.loadLASPCD(directory + filename + std::string(".pcd"));
   classifier.setOutputOptions(true, directory + "output/", filename, true, true);
   classifier.decimateToMinima(decimation_factor, true);
-  classifier.curvatureAnalysis(normal_neighbors, roughness_neighbors);
+  classifier.curvatureAnalysis(normals_radius, roughness_neighbors);
   classifier.buildGroundTIN();
   classifier.extractVegetationTIN(min_veg_height);
   classifier.decimateVegetation(decimation_factor_veg, true);
