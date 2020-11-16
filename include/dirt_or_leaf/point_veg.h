@@ -25,6 +25,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::PointVeg,
                                   (float, y, y)
                                   (float, z, z)
                                   (float, intensity, intensity)
+                                  (float, classification, classification)
                                   (float, height, height)
                                   (float, roughness, roughness)
 )

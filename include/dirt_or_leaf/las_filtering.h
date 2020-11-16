@@ -51,6 +51,11 @@ namespace las_filtering{
     void filterToLastReturn(CloudType input, CloudType output);
     template <typename CloudType, typename Cloud2DType> 
     void filterToLastReturn(CloudType data, Cloud2DType input, Cloud2DType output);
+    // Remove all points EXCEPT the first returns 
+    template <typename CloudType> 
+    void filterToFirstReturn(CloudType input, CloudType output);
+    template <typename CloudType, typename Cloud2DType> 
+    void filterToFirstReturn(CloudType data, Cloud2DType input, Cloud2DType output);
 
 
     // De-Meaning 
@@ -68,6 +73,7 @@ namespace las_filtering{
     //   Compared to TIN surface
     template <typename CloudType, typename SourcePointType>
     float relativePointHeight(CloudType cloud, SourcePointType point, las_triangulation::Delaunay &ground);
+
 }
 
 //std::vector<int> getNeighbors(pcl::Point2DIndex source, SCP target, bool keep_self=false);

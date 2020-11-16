@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
   std::cout << std::endl;
   std::cout << "Beginning LiDAR classification routine." << std::endl;
 
-  if ( argc != 9 ) // argc should be 2 for correct execution
+  if ( argc != 14 ) // argc should be 2 for correct execution
   {
     // We print argv[0] assuming it is the target file
     std::cout << "Didn't receive expected number of arguments. Usage: data/" << argv[0] << ".pdc <filename>\n";
@@ -25,12 +25,17 @@ int main(int argc, char *argv[])
 
   std::string directory = argv[1];
   std::string filename = argv[2];
-  int decimation_factor = std::atoi(argv[3]);
+  int decimation_factor = std::atof(argv[3]);
   double minima_radius = std::atof(argv[4]);
-  float normals_radius = std::atoi(argv[5]);
-  int roughness_neighbors = std::atoi(argv[6]);
-  float min_veg_height = std::atoi(argv[7]);
-  float decimation_factor_veg = std::atoi(argv[8]);
+  float normals_radius = std::atof(argv[5]);
+  int roughness_neighbors = std::atof(argv[6]);
+  float min_veg_height = std::atof(argv[7]);
+  float decimation_factor_veg = std::atof(argv[8]);
+  int decimation_factor_maxima = std::atof(argv[9]);
+  float maxima_normal_neighbors = std::atof(argv[10]);
+  float maxima_roughness_neighbors = std::atof(argv[11]);
+  float roof_dist_thresh = std::atof(argv[12]);
+  float roof_smooth_thresh = std::atof(argv[13]);
 
   Timer total_timer("total time");
   // Perform Classification 
@@ -41,7 +46,9 @@ int main(int argc, char *argv[])
   classifier.curvatureAnalysis(normals_radius, roughness_neighbors);
   classifier.buildGroundTIN();
   classifier.extractVegetationTIN(min_veg_height);
-  classifier.decimateVegetation(decimation_factor_veg, true);
+  classifier.decimateVegetation(decimation_factor_veg, true);  
+  classifier.decimateToMaxima(decimation_factor_maxima, true);
+  classifier.extractBuildings(maxima_normal_neighbors, maxima_roughness_neighbors, roof_dist_thresh, roof_smooth_thresh);
 
   total_timer.stop();
 

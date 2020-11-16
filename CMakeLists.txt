@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-project(pcl_test)
+project(dirt_or_leaf)
 
 # Point Cloud Library (PCL)
 find_package(PCL 1.09 REQUIRED COMPONENTS)
@@ -23,7 +23,7 @@ if ( NOT Boost_FOUND )
   return()
 endif()
 
-
+# New Libraries 
 add_library(las_classifier src/las_classifier.cpp)
 target_link_libraries(las_classifier ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
 add_library(las_filtering src/las_filtering.cpp)
@@ -34,6 +34,15 @@ add_library(las_triangulation src/las_triangulation.cpp)
 target_link_libraries(las_triangulation ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
 add_library(ground_tin src/ground_tin.cpp)
 target_link_libraries(ground_tin ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
-
+add_library(region_growing_smooth_distance src/region_growing_smooth_distance.cpp)
+target_link_libraries(region_growing_smooth_distance ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+# Test Executable
 add_executable(pcl_test src/pcl_test.cpp)
 target_link_libraries(pcl_test ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+
+
+install(TARGETS las_classifier las_filtering las_surfacing las_triangulation ground_tin region_growing_smooth_distance
+        DESTINATION lib)
+install(DIRECTORY include/${PROJECT_NAME}
+        DESTINATION include
+        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")

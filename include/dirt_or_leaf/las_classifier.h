@@ -10,6 +10,10 @@
 #include <pcl/io/vtk_io.h>
 #include <pcl/io/ply_io.h>
 
+#include <pcl/search/search.h>
+#include <pcl/segmentation/region_growing.h>
+#include <dirt_or_leaf/region_growing_smooth_distance.hpp>
+
 template <typename LASType, typename VegType, typename GroundType> 
 class LASClassifier{
 
@@ -51,12 +55,15 @@ public:
     void setOutputOptions(bool save_outputs, std::string output_directory, std::string scene_name, bool demean=true, bool remean=true);
     // Filter to Ground
     void decimateToMinima(int decimation_factor, bool return_information);
+    void decimateToMaxima(int decimation_factor, bool return_information);
     void decimateVegetation(int decimation_factor, bool return_information);
     void curvatureAnalysis(int num_neighbors, int roughness_neighbors);
     void buildGroundTIN();
     // Vegetation Extraction
     void extractVegetation(float min_height, int num_neighbors);
     void extractVegetationTIN(float min_height);
+    // Building Extraction
+    void extractBuildings(int decimation_neighbors, float roughness_neighbors, float dist_thresh, float smoothness_thresh);
 
 
 private:
@@ -81,7 +88,8 @@ private:
     Tree2DP ground_decimated_tree_;
     Tree2DP ground_filtered_tree_;
     Tree2DP ground_tree_;
-
+  // Search Buildings on Clouds
+    GCP tops_decimated_;
     
 
   // Should cloud be de-meaned and to prevent overflow for very large coordinate systems? 
@@ -112,6 +120,7 @@ private:
     float TIN_time_;
     float upsampling_time_;
     float veg_decimation_time_;
+    float maxima_decimation_time_;
 
 };
 

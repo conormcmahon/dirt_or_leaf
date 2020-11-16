@@ -34,6 +34,7 @@ void LASClassifier<LASType, VegType, GroundType>::initializeClouds(){
     ground_.reset(new GC());
     vegetation_.reset(new VC());
     vegetation_decimated_.reset(new VC());
+    tops_decimated_.reset(new GC());
     // Initialize Point Cloud Smart Pointer Targets
     input_las_tree_.reset(new Tree3D());
     input_tree_.reset(new Tree2D());
@@ -61,7 +62,7 @@ int LASClassifier<LASType, VegType, GroundType>::loadLASPCD(std::string filename
     Timer cloud_loading_timer("loading cloud");
     if (pcl::io::loadPCDFile<LASType> (filename, *input_las_) == -1) //* load the file
     {
-        std::cout << "\nCouldn't read file data/" << filename << std::endl;
+        std::cout << "\nCouldn't read file " << filename << std::endl;
         return (-1);
     }
     std::cout << "Loaded " << input_las_->width * input_las_->height << " data points from " << filename << std::endl;
@@ -191,6 +192,30 @@ void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimatio
         outputPCD<LCP, GCP, LASType>(input_las_, ground_decimated_, output_directory_ + scene_name_ + std::string("_decimated.pcd"), true);
     decimation_time_ = timer.stop(timekeeping_);
 }
+
+// ------------------------------------ Ground Segmentation ------------------------------------
+// Decimate point cloud, keeping only the LOWEST point within each group of DECIMATION_FACTOR points
+// Optionally can also choose to filter for only the last returns, following decimation
+template <typename LASType, typename VegType, typename GroundType> 
+void LASClassifier<LASType, VegType, GroundType>::decimateToMaxima(int decimation_factor, bool return_information)
+{
+    if(debugging_)
+        std::cout << "Performing cloud decimation with factor " << decimation_factor << ". Initial cloud size: " << input_las_->points.size() << std::endl;
+    Timer timer("decimation");
+    las_filtering::decimateToMaxima<LCP, GCP, GroundType>(input_las_, input_las_flattened_, tops_decimated_, decimation_factor);
+    if(return_information)
+    {
+        GCP first_returns(new GC);
+        las_filtering::filterToFirstReturn<LCP, GCP>(input_las_, tops_decimated_, first_returns);
+        *tops_decimated_ = *first_returns;
+    }
+    if(debugging_)
+        std::cout << "Finished decimation. Writing " << tops_decimated_->points.size() << " to   " << output_directory_ + scene_name_ + std::string("_max_decimated.pcd") << std::endl;
+    if(save_outputs_)
+        outputPCD<LCP, GCP, LASType>(input_las_, tops_decimated_, output_directory_ + scene_name_ + std::string("_max_decimated.pcd"), true);
+    maxima_decimation_time_ = timer.stop(timekeeping_);
+}
+
 
 // Decimate point cloud, keeping only the HIGHEST point within each group of DECIMATION_FACTOR points
 template <typename LASType, typename VegType, typename GroundType> 
@@ -337,3 +362,13 @@ void LASClassifier<LASType, VegType, GroundType>::buildGroundTIN()
     if(save_outputs_)
         TIN_data_.saveTIN(output_directory_ + scene_name_ + std::string("_triangles.ply"), remean_, offset_);
 }
+
+
+
+
+template <typename LASType, typename VegType, typename GroundType> 
+void LASClassifier<LASType, VegType, GroundType>::extractBuildings(int normals_neighbors, float roughness_neighbors, float dist_thresh, float smoothness_thresh)
+{
+    
+}
+
