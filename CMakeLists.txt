@@ -36,12 +36,14 @@ add_library(ground_tin src/ground_tin.cpp)
 target_link_libraries(ground_tin ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
 add_library(region_growing_smooth_distance src/region_growing_smooth_distance.cpp)
 target_link_libraries(region_growing_smooth_distance ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+add_library(las_point_types src/las_point_types.cpp)
+target_link_libraries(las_point_types ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
 # Test Executable
 add_executable(pcl_test src/pcl_test.cpp)
 target_link_libraries(pcl_test ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
 
 
-install(TARGETS las_classifier las_filtering las_surfacing las_triangulation ground_tin region_growing_smooth_distance
+install(TARGETS las_classifier las_filtering las_surfacing las_triangulation ground_tin region_growing_smooth_distance las_point_types pcl_test
         DESTINATION lib)
 install(DIRECTORY include/${PROJECT_NAME}
         DESTINATION include
