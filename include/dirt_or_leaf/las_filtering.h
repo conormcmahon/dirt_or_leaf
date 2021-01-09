@@ -2,6 +2,9 @@
 #ifndef LAS_FILTERING_
 #define LAS_FILTERING_
 
+// Basic Includes
+#include <boost/make_shared.hpp>
+
 // Dirt_Or_Leaf includes
 #include <dirt_or_leaf/las_conversions.h>
 #include <dirt_or_leaf/timer.h>
@@ -24,10 +27,23 @@
 
 namespace las_filtering{
 
+    // ---- Classification Filter ----
+    // Filter input cloud based on existing point class information 
+    //   String Class Keys (using standard LAS classification codes)
+    template <typename CloudType> 
+    std::vector<int> classFilter(CloudType input, CloudType output, std::string class_name, bool remove=true);
+    //   Integer Class Keys
+    template <typename CloudType> 
+    std::vector<int> classFilter(CloudType input, CloudType output, std::vector<int> class_codes, bool remove=true);
+
     // ---- Decimation ----
     // Reduce cloud density, keeping only one local *minimum* point for every DECIMATION_FACTOR points
     template <typename CloudType, typename Cloud2DType, typename PointType> 
+    void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor, bool remove_buildings, bool remove_vegetation);
+    template <typename CloudType, typename Cloud2DType, typename PointType> 
     void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor);
+    template <typename CloudType, typename PointType> 
+    void decimateToMinima(CloudType input, CloudType output, int decimation_factor, bool remove_buildings, bool remove_vegetation);
     template <typename CloudType, typename PointType> 
     void decimateToMinima(CloudType input, CloudType output, int decimation_factor);
     // Reduce cloud density, keeping only one local *maximum* point for every DECIMATION_FACTOR points

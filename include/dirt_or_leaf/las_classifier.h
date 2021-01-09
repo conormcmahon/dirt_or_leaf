@@ -54,15 +54,16 @@ public:
     void setDebugging(bool debugging);
     void setOutputOptions(bool save_outputs, std::string output_directory, std::string scene_name, bool demean=true, bool remean=true);
     // Filter to Ground
-    void decimateToMinima(int decimation_factor, bool return_information);
+    void decimateToMinima(int decimation_factor, bool return_information, bool remove_buildings, bool remove_vegetation);
     void decimateToMaxima(int decimation_factor, bool return_information);
     void decimateVegetation(int decimation_factor, bool return_information);
     void curvatureAnalysis(int num_neighbors, int roughness_neighbors);
     void buildGroundTIN();
     // Vegetation Extraction
-    void extractVegetation(float min_height, int num_neighbors);
-    void extractVegetationTIN(float min_height);
+    void extractVegetation(float min_height, int num_neighbors, bool filter_to_veg_class, bool filter_out_buildings);
+    void extractVegetationTIN(float min_height, bool filter_to_veg_class, bool filter_out_buildings);
     // Building Extraction
+    void extractBuildings();
     void extractBuildings(int decimation_neighbors, float roughness_neighbors, float dist_thresh, float smoothness_thresh);
 
 
@@ -80,6 +81,8 @@ private:
     // Vegetation Cloud
     VCP vegetation_;
     VCP vegetation_decimated_;
+    // Building Cloud
+    LCP buildings_;
   // Search Trees on Clouds
     // 3D Search Trees
     Tree3DP input_las_tree_;

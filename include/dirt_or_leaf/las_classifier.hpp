@@ -35,7 +35,8 @@ void LASClassifier<LASType, VegType, GroundType>::initializeClouds(){
     vegetation_.reset(new VC());
     vegetation_decimated_.reset(new VC());
     tops_decimated_.reset(new GC());
-    // Initialize Point Cloud Smart Pointer Targets
+    buildings_.reset(new LC());
+    // Initialize KD Tree Smart Pointer Targets
     input_las_tree_.reset(new Tree3D());
     input_tree_.reset(new Tree2D());
     ground_decimated_tree_.reset(new Tree2D());
@@ -174,18 +175,32 @@ void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType data, Clou
 // Decimate point cloud, keeping only the LOWEST point within each group of DECIMATION_FACTOR points
 // Optionally can also choose to filter for only the last returns, following decimation
 template <typename LASType, typename VegType, typename GroundType> 
-void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimation_factor, bool return_information)
+void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimation_factor, bool return_information, bool remove_buildings, bool remove_vegetation)
 {
     if(debugging_)
         std::cout << "Performing cloud decimation with factor " << decimation_factor << ". Initial cloud size: " << input_las_->points.size() << std::endl;
     Timer timer("decimation");
-    las_filtering::decimateToMinima<LCP, GCP, GroundType>(input_las_, input_las_flattened_, ground_decimated_, decimation_factor);
+    // Extract Local Minima (decimated)
+    las_filtering::decimateToMinima<LCP, GCP, GroundType>(input_las_, input_las_flattened_, ground_decimated_, decimation_factor, remove_buildings, remove_vegetation);
+    int total_building_pts = 0;
+    for(int i=0; i<ground_decimated_->points.size(); i++)
+        if(input_las_->points[ground_decimated_->points[i].index].classification == 6)
+            total_building_pts++;
+    std::cout << " total points: " << ground_decimated_->points.size() << " and building points: " << total_building_pts << std::endl;
+    // Filter to Last Returns (optionally)
     if(return_information)
     {
         GCP last_returns(new GC);
         las_filtering::filterToLastReturn<LCP, GCP>(input_las_, ground_decimated_, last_returns);
         *ground_decimated_ = *last_returns;
     }
+    
+     total_building_pts = 0;
+    for(int i=0; i<ground_decimated_->points.size(); i++)
+        if(input_las_->points[ground_decimated_->points[i].index].classification == 6)
+            total_building_pts++;
+    std::cout << " total points: " << ground_decimated_->points.size() << " and building points: " << total_building_pts << std::endl;
+    // Debug and Output Cloud to Disk 
     if(debugging_)
         std::cout << "Finished decimation. Writing " << ground_decimated_->points.size() << " to   " << output_directory_ + scene_name_ + std::string("_decimated.pcd") << std::endl;
     if(save_outputs_)
@@ -291,11 +306,24 @@ void LASClassifier<LASType, VegType, GroundType>::curvatureAnalysis(int num_neig
 
 // Height assessment based on inverse distance weighted neareest neighbor search in cloud
 template <typename LASType, typename VegType, typename GroundType> 
-void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_height, int num_neighbors)
+void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_height, int num_neighbors, bool filter_to_veg_class, bool filter_out_buildings)
 {
     Timer vegetation_timer("vegetation extraction");
     for(std::size_t i=0; i<input_las_->points.size(); i++)
     {
+        // Optionally, skip points without a 'Vegetation' classification label (in standard LAS classification)
+        if(filter_to_veg_class)
+        {
+            if(input_las_->points[i].classification < 3 || input_las_->points[i].classification > 5)
+                continue;
+        }
+        // OR just skip points which DO have a 'Building' classification label (in standard LAS classification)
+        else if(filter_out_buildings)
+        {
+            if(input_las_->points[i].classification == 6)
+                continue;
+        }
+        // Get height over NUM_NEIGHBORS neighboring ground points
         float height = las_filtering::relativePointHeight<GCP, GroundType, Tree2DP>(ground_filtered_, input_las_flattened_->points[i], ground_filtered_tree_, num_neighbors);
         if(height > min_height)
         {
@@ -321,11 +349,24 @@ void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_he
 }
 // Search based on TIN
 template <typename LASType, typename VegType, typename GroundType> 
-void LASClassifier<LASType, VegType, GroundType>::extractVegetationTIN(float min_height)
+void LASClassifier<LASType, VegType, GroundType>::extractVegetationTIN(float min_height, bool filter_to_veg_class, bool filter_out_buildings)
 {
     Timer vegetation_timer("vegetation extraction");
     for(std::size_t i=0; i<input_las_->points.size(); i++)
     {
+        // Optionally, skip points without a 'Vegetation' classification label (in standard LAS classification)
+        if(filter_to_veg_class)
+        {
+            if(input_las_->points[i].classification < 3 || input_las_->points[i].classification > 5)
+                continue;
+        }
+        // OR just skip points which DO have a 'Building' classification label (in standard LAS classification)
+        else if(filter_out_buildings)
+        {
+            if(input_las_->points[i].classification == 6)
+                continue;
+        }
+        // Get point height over ground TIN
         float height = TIN_data_.getPointHeight(ground_filtered_, input_las_flattened_->points[i]);
         if(height > min_height)
         {
@@ -370,5 +411,15 @@ template <typename LASType, typename VegType, typename GroundType>
 void LASClassifier<LASType, VegType, GroundType>::extractBuildings(int normals_neighbors, float roughness_neighbors, float dist_thresh, float smoothness_thresh)
 {
     
+}
+
+template <typename LASType, typename VegType, typename GroundType> 
+void LASClassifier<LASType, VegType, GroundType>::extractBuildings()
+{
+    las_filtering::classFilter(input_las_, buildings_, "Building", false);
+    if(debugging_)
+        std::cout << "Finished extracting buildings, with " << buildings_->points.size() << " points in total." << std::endl; 
+    if(save_outputs_)
+        outputPCD<LCP, LASType>(buildings_, output_directory_ + scene_name_ + std::string("_buildings.pcd"), true);
 }
 

@@ -4,6 +4,92 @@
 
 namespace las_filtering{
 
+// ----- Class Filter -----
+// String-based Filter on Cloud
+//   Filter input cloud to retain only points with classification matching input string CLASS_NAME
+//   REMOVE parameter specifies whether matching points will be removed (TRUE) or retained (FALSE)
+//   NOTE this implementation assumes the standard LAS classification codes: 
+//   https://desktop.arcgis.com/en/arcmap/10.3/manage-data/las-dataset/lidar-point-classification.htm
+template <typename CloudType> 
+std::vector<int> classFilter(CloudType input, CloudType output, std::string class_name, bool remove)
+{
+    // NOTE that string::compare() returns 0 if the two strings ARE equal. 
+    if(class_name.compare("Unclassified")*class_name.compare("unclassified") == 0)
+        return classFilter(input, output, std::vector<int>{0, 1}, remove);
+    if(class_name.compare("Ground")*class_name.compare("ground") == 0)
+        return classFilter(input, output, std::vector<int>{2}, remove);
+    if(class_name.compare("Vegetation")*class_name.compare("vegetation") == 0)
+        return classFilter(input, output, std::vector<int>{3,4,5}, remove);
+    if(class_name.compare("Building")*class_name.compare("building")*class_name.compare("Buildings")*class_name.compare("buildings") == 0)
+        return classFilter(input, output, std::vector<int>{6}, remove);
+    if(class_name.compare("Water")*class_name.compare("water") == 0)
+        return classFilter(input, output, std::vector<int>{3,4,5}, remove);
+    if(class_name.compare("Road")*class_name.compare("road") == 0)
+        return classFilter(input, output, std::vector<int>{3,4,5}, remove);
+    else
+    {
+        std::cout << "WARNING: Class filtering requested with string key, but key does not match any expected value. Returning without filtering.";
+        return std::vector<int>(0);
+    }
+}
+// Integer-based Filter on Cloud
+//   Filter input cloud to retain only points with classification matching input integer array CLASS_CODES
+//   Array can contain any number of classs values (e.g. 2 for ground, 3-5 for vegetation, 6 for building, 9 for water...)
+//   REMOVE parameter specifies whether matching points will be removed (TRUE) or retained (FALSE)
+template <typename CloudType> 
+std::vector<int> classFilter(CloudType input, CloudType output, std::vector<int> class_codes, bool remove)
+{
+    std::cout << "  Input Cloud Size: " << input->points.size();
+    std::cout << "  Class Codes: ";
+    for(int i=0; i<class_codes.size(); i++)
+    {
+        std::cout << class_codes[i]; 
+    }
+    std::cout << std::endl;
+
+    output->points.clear();
+    std::vector<int> retained_indices;
+    // Ensure that input array of allowed classes is not empty
+    if(class_codes.size() < 1)
+    {
+        std::cout << "WARNING: Classification filter called with no input classes selected. Exiting without applying filter." << std::endl;
+        return retained_indices;
+    } 
+    bool match_found;
+    std::size_t class_ind;
+
+    // For each input point...
+    for(int point_ind=0; point_ind<input->points.size(); point_ind++)
+    {
+        // Reset Counters
+        match_found = false;
+        class_ind = 0;
+        // Check point against each allowed class
+        while(!match_found && class_ind < class_codes.size())
+        {
+            // And determine whether it matches any of them
+            if(input->points[point_ind].classification == class_codes[class_ind])
+                match_found = true;
+            class_ind++;
+        };
+        // Reject or keep the point, depending on whether a match was found and the input option 
+        if(remove && !match_found)
+        {
+            output->points.push_back(input->points[point_ind]);
+            retained_indices.push_back(point_ind);
+        }
+        else if(!remove && match_found)
+        {
+            output->points.push_back(input->points[point_ind]);
+            retained_indices.push_back(point_ind);
+        }
+    }
+    output->width = 1;
+    output->height = output->points.size();
+
+    return retained_indices;
+}
+
 // ---- Decimation ----
 // Note that this does not guarantee that each retained point is a local minimum within its own neighborhood of DECIMATION_FACTOR points.
 // For efficiency, not every point has its neighborhood checked - points which are found to be higher than a neighbor are disqualified before 
@@ -15,13 +101,48 @@ namespace las_filtering{
 //   INPUT_FLAT is a restructured version of the above which contains only 2D information (to search on 2D KdTrees)
 //   OUTPUT is also a flattened, simple 2D cloud but each point should contain an index to its parent point in INPUT (where data is stored)
 // -- For cases where input and output cloud types are 2D + Index and data (including Z) is only in a separate higher-dimension data cloud
+// First, a wrapper which allows for removing vegetation and building points
+template <typename CloudType, typename Cloud2DType, typename PointFlat> 
+void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor, bool remove_buildings, bool remove_vegetation)
+{
+    typedef typename CloudType::element_type Cloud3D;
+    typedef typename Cloud2DType::element_type Cloud2D;
+    // Generate temporary datasets with filtered inputs
+    CloudType data_temp(new Cloud3D());
+    Cloud2DType input_flat_temp(new Cloud2D());; //(boost::make_shared<decltype(*input_flat)>(*input_flat));
+
+    std::vector<int> retained_indices;
+    if(remove_buildings && ! remove_vegetation)
+        retained_indices = classFilter(data, data_temp, std::vector<int>{6}, true);
+    else if(!remove_buildings && remove_vegetation)
+        retained_indices = classFilter(data, data_temp, std::vector<int>{3, 4, 5}, true);
+    else if(remove_buildings && remove_vegetation)
+        retained_indices = classFilter(data, data_temp, std::vector<int>{3, 4, 5, 6}, true);
+    else *data_temp = *data;
+
+    if(retained_indices.size() == 0)
+        std::cout << "  WARNING: Decimation to minima requested with class filter first, but no points remain after class filter is performed. Continuing without class filter." << std::endl;
+    else
+        std::cout << "  Filtered a cloud prior to decimation. Initial cloud had " << data->points.size() << " points, while new cloud has " << retained_indices.size() << " points" << std::endl;
+    // Filter flat cloud to match data cloud
+    if(remove_buildings || remove_vegetation)
+    {
+        for(std::size_t i=0; i<retained_indices.size(); i++)
+            input_flat_temp->points.push_back(input_flat->points[retained_indices[i]]);
+    }
+    std::cout << " made it in here1...";
+    decimateToMinima<CloudType, Cloud2DType, PointFlat>(data, input_flat_temp, output, decimation_factor);
+}
 template <typename CloudType, typename Cloud2DType, typename PointFlat> 
 void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor)
 {
+    std::cout << " made it in here2...";
+    output->points.clear();
     // Stores whether each input point is a minimum
     std::vector<bool> retained_after_decimation(input_flat->points.size(), true);
     pcl::KdTreeFLANN<PointFlat> search_tree;
     search_tree.setInputCloud(input_flat);
+    std::cout << " made it in here3...";
     for(std::size_t i=0; i<input_flat->points.size(); i++)
     {
         // Disqualify points which we've already found to be higher than a neighbor
@@ -60,8 +181,24 @@ void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output
 }
 // -- For cases where input and output cloud types are the same and both contain XYZ information
 template <typename CloudType, typename PointType> 
+void decimateToMinima(CloudType input, CloudType output, int decimation_factor, bool remove_buildings, bool remove_vegetation)
+{  
+    CloudType input_temp(boost::make_shared<decltype(*input)>(*input));
+
+/*
+    // Optionally, disqualify points which are building or vegetation classes
+        if(remove_buildings && data->points[i].classification == 6)
+            continue;
+        if(remove_vegetation && data->points[i].classification == 3 || 
+                                data->points[i].classification == 4 || 
+                                data->points[i].classification == 5)
+            continue;
+            */
+}
+template <typename CloudType, typename PointType> 
 void decimateToMinima(CloudType input, CloudType output, int decimation_factor)
 {
+    output->points.clear();
     // Stores whether each input point is a minimum
     std::vector<bool> retained_after_decimation(input->points.size(), true);
     pcl::KdTreeFLANN<PointType> search_tree;
@@ -194,6 +331,8 @@ void filterToLastReturn(CloudType input, CloudType output)
     for(std::size_t i=0; i<input->points.size(); i++)
         if(input->points[i].returnnumber == input->points[i].numberofreturns)
             output->points.push_back(input->points[i]);
+    output->width = 1;
+    output->height = output->points.size();
 }
 // Assuming cloud to be processed is a simpler type containing only 2D information and an index which points
 //   to the more complex data stored in the initial input cloud
@@ -203,6 +342,8 @@ void filterToLastReturn(CloudType data, Cloud2DType input, Cloud2DType output)
     for(std::size_t i=0; i<input->points.size(); i++)
         if(data->points[input->points[i].index].returnnumber == data->points[input->points[i].index].numberofreturns)
             output->points.push_back(input->points[i]);
+    output->width = 1;
+    output->height = output->points.size();
 }      
 // Assuming both input and output clouds have information on return number
 template <typename CloudType> 
@@ -211,6 +352,8 @@ void filterToFirstReturn(CloudType input, CloudType output)
     for(std::size_t i=0; i<input->points.size(); i++)
         if(input->points[i].returnnumber == 1)
             output->points.push_back(input->points[i]);
+    output->width = 1;
+    output->height = output->points.size();
 }
 // Assuming cloud to be processed is a simpler type containing only 2D information and an index which points
 //   to the more complex data stored in the initial input cloud
@@ -220,6 +363,8 @@ void filterToFirstReturn(CloudType data, Cloud2DType input, Cloud2DType output)
     for(std::size_t i=0; i<input->points.size(); i++)
         if(data->points[input->points[i].index].returnnumber == 1)
             output->points.push_back(input->points[i]);
+    output->width = 1;
+    output->height = output->points.size();
 } 
 
 // Estimate Cloud Normals 
@@ -330,6 +475,8 @@ void reMeanCloud(CloudType cloud, Eigen::Vector3d mean_coords)
         cloud->points[i].y = float(cloud->points[i].y + mean_coords[1]);
         cloud->points[i].z = float(cloud->points[i].z + mean_coords[2]);
     }  
+    cloud->width = 1;
+    cloud->height = cloud->points.size();
 }
 template <typename CloudType>
 void reMeanCloud(CloudType input, CloudType output, Eigen::Vector3d mean_coords)
@@ -341,6 +488,8 @@ void reMeanCloud(CloudType input, CloudType output, Eigen::Vector3d mean_coords)
         output->points[i].y = float(input->points[i].y + mean_coords[1]);
         output->points[i].z = float(input->points[i].z + mean_coords[2]);
     }  
+    output->width = 1;
+    output->height = output->points.size();
 }
 
 

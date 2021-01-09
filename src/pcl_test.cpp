@@ -42,13 +42,14 @@ int main(int argc, char *argv[])
   LASClassifier<pcl::PointLAS , pcl::PointVeg, pcl::Point2DGround> classifier;
   classifier.loadLASPCD(directory + filename + std::string(".pcd"));
   classifier.setOutputOptions(true, directory + "output/", filename, true, true);
-  classifier.decimateToMinima(decimation_factor, true);
+  classifier.decimateToMinima(decimation_factor, true, true, true);
   classifier.curvatureAnalysis(normals_radius, roughness_neighbors);
   classifier.buildGroundTIN();
-  classifier.extractVegetationTIN(min_veg_height);
+  classifier.extractVegetationTIN(min_veg_height, false, true);
   classifier.decimateVegetation(decimation_factor_veg, true);  
   classifier.decimateToMaxima(decimation_factor_maxima, true);
-  classifier.extractBuildings(maxima_normal_neighbors, maxima_roughness_neighbors, roof_dist_thresh, roof_smooth_thresh);
+  classifier.extractBuildings();
+//  classifier.extractBuildings(maxima_normal_neighbors, maxima_roughness_neighbors, roof_dist_thresh, roof_smooth_thresh);
 
   total_timer.stop();
 
