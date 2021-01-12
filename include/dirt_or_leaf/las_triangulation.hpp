@@ -43,7 +43,7 @@ namespace las_triangulation
         unsigned ind_3 = face->vertex(2)->info();
        // Skip points which are outside the initial minima convex hull 
         if(std::max(std::max(ind_1,ind_2),ind_3) > cloud->points.size()-1)
-            return -100; 
+            return -1000; 
         
         // Set up Eigen structs
         //   Vertices of Triangle
