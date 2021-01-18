@@ -14,7 +14,10 @@ struct PointVeg
     float intensity;                    // Laser intensity
     float classification;               // Surface classification
     float height;
+    int returnnumber;
+    int numberofreturns;
     float roughness;
+    int index;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW     // Ensure proper alignment
   } EIGEN_ALIGN16;
 }
@@ -27,6 +30,9 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::PointVeg,
                                   (float, classification, classification)
                                   (float, height, height)
                                   (float, roughness, roughness)
+                                  (int, index, index)
+                                  (int, returnnumber, returnnumber)
+                                  (int, numberofreturns, numberofreturns)
 )
 
 namespace pcl {

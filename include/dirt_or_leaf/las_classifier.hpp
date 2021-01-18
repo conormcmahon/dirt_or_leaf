@@ -1,4 +1,7 @@
 
+#ifndef LAS_CLASSIFIER_HPP_
+#define LAS_CLASSIFIER_HPP_
+
 #include "dirt_or_leaf/las_classifier.h"
 
 
@@ -309,7 +312,7 @@ template <typename LASType, typename VegType, typename GroundType>
 void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_height, int num_neighbors, bool filter_to_veg_class, bool filter_out_buildings)
 {
     Timer vegetation_timer("vegetation extraction");
-    for(std::size_t i=0; i<input_las_->points.size(); i++)
+    for(int i=0; i<input_las_->points.size(); i++)
     {
         // Optionally, skip points without a 'Vegetation' classification label (in standard LAS classification)
         if(filter_to_veg_class)
@@ -331,6 +334,9 @@ void LASClassifier<LASType, VegType, GroundType>::extractVegetation(float min_he
             point.x = input_las_->points[i].x;
             point.y = input_las_->points[i].y;
             point.z = input_las_->points[i].z;
+            point.index = i;
+            point.returnnumber = input_las_->points[i].returnnumber;
+            point.numberofreturns = input_las_->points[i].numberofreturns;
             point.intensity = input_las_->points[i].intensity;
             point.height = height;
 
@@ -352,7 +358,7 @@ template <typename LASType, typename VegType, typename GroundType>
 void LASClassifier<LASType, VegType, GroundType>::extractVegetationTIN(float min_height, bool filter_to_veg_class, bool filter_out_buildings)
 {
     Timer vegetation_timer("vegetation extraction");
-    for(std::size_t i=0; i<input_las_->points.size(); i++)
+    for(int i=0; i<input_las_->points.size(); i++)
     {
         // Optionally, skip points without a 'Vegetation' classification label (in standard LAS classification)
         if(filter_to_veg_class)
@@ -374,6 +380,9 @@ void LASClassifier<LASType, VegType, GroundType>::extractVegetationTIN(float min
             point.x = input_las_->points[i].x;
             point.y = input_las_->points[i].y;
             point.z = input_las_->points[i].z;
+            point.index = i;
+            point.returnnumber = input_las_->points[i].returnnumber;
+            point.numberofreturns = input_las_->points[i].numberofreturns;
             point.intensity = input_las_->points[i].intensity;
             point.height = height;
 
@@ -423,3 +432,4 @@ void LASClassifier<LASType, VegType, GroundType>::extractBuildings()
         outputPCD<LCP, LASType>(buildings_, output_directory_ + scene_name_ + std::string("_buildings.pcd"), true);
 }
 
+#endif // LAS_CLASSIFIER_HPP_
