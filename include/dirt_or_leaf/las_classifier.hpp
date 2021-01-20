@@ -138,6 +138,11 @@ template <typename LASType, typename VegType, typename GroundType>           // 
 template <typename CloudType, typename PointType>       // Member Function Template
 void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType cloud, std::string filename, bool binary)
 { 
+    if(cloud->points.size() < 1)
+    {
+        std::cout << "  WARNING: Asked to save a cloud to " << filename << ", but the cloud is empty. No cloud will be saved." << std::endl;
+        return;
+    }
     pcl::PCDWriter writer;
     // Re-apply XYZ offset that was temporarily removed for computational reasons
     if(remean_)
@@ -155,6 +160,11 @@ template <typename LASType, typename VegType, typename GroundType>           // 
 template <typename CloudType, typename Cloud2DType, typename PointType>       // Member Function Template
 void LASClassifier<LASType, VegType, GroundType>::outputPCD(CloudType data, Cloud2DType cloud, std::string filename, bool binary)
 {
+    if(cloud->points.size() < 1 || data->points.size() < 1)
+    {
+        std::cout << "  WARNING: Asked to save a cloud to " << filename << ", but the cloud is empty. No cloud will be saved." << std::endl;
+        return;
+    }
     // Create data cloud at given indices
     LCP output(new LC);
     for(std::size_t i=0; i<cloud->points.size(); i++)
