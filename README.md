@@ -13,7 +13,7 @@ Make sure you have [proj](https://proj.org/), [GDAL](https://gdal.org/), [CGAL](
 The example command line executable uses the following syntax:
 
 ```
-raster_stats_tester INPUT_DIRECTORY INPUT_FILENAME DECIMATION_FACTOR MINIMA_RADIUS NORMALS_RADIUS ROUGHNESS_NEIGHBORS MIN_VEG_HEIGHT DECIMATION_FACTOR_VEG DECIMATION_FACTOR_MAXIMA MAXIMA_NORMAL_NEIGHBORS MAXIMA_ROUGHNESS_NEIGHBORS ROOF_DIST_THRESH ROOF_SMOOTH_THRESH
+pcl_test INPUT_DIRECTORY INPUT_FILENAME DECIMATION_FACTOR MINIMA_RADIUS NORMALS_RADIUS ROUGHNESS_NEIGHBORS MIN_VEG_HEIGHT DECIMATION_FACTOR_VEG DECIMATION_FACTOR_MAXIMA MAXIMA_NORMAL_NEIGHBORS MAXIMA_ROUGHNESS_NEIGHBORS ROOF_DIST_THRESH ROOF_SMOOTH_THRESH
 
   INPUT_DIRECTORY          - Full filepath to directory where input file is saved. All output files will be saved to a subdirectory called 'output' which must exist.
   INPUT_FILENAME           - Filename for input file within above directory, not including file extension 
