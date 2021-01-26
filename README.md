@@ -4,6 +4,33 @@
 
 Open library for segmenting plant and ground returns from aerial LiDAR point clouds.
 
+## Dependencies
+
+Make sure you have [proj](https://proj.org/), [GDAL](https://gdal.org/), [CGAL](https://www.cgal.org/), and [PCL](https://pointclouds.org/) installed.
+
+## Usage
+
+The example command line executable uses the following syntax:
+
+```
+raster_stats_tester INPUT_DIRECTORY INPUT_FILENAME DECIMATION_FACTOR MINIMA_RADIUS NORMALS_RADIUS ROUGHNESS_NEIGHBORS MIN_VEG_HEIGHT DECIMATION_FACTOR_VEG DECIMATION_FACTOR_MAXIMA MAXIMA_NORMAL_NEIGHBORS MAXIMA_ROUGHNESS_NEIGHBORS ROOF_DIST_THRESH ROOF_SMOOTH_THRESH
+
+  INPUT_DIRECTORY          - Full filepath to directory where input file is saved. All output files will be saved to a subdirectory called 'output' which must exist.
+  INPUT_FILENAME           - Filename for input file within above directory, not including file extension 
+  DECIMATION_FACTOR        - Number of neighbors used in ground decimation checks. For, e.g., 10, a ground point will only be retained if lower than its 10 neighbors. 
+  MINIMA_RADIUS            - Radius in which to search for minima for ground cloud. 
+  NORMALS_RADIUS           - Radius in which to search for neighbors when computing normals around each ground point.
+  ROUGHNESS_NEIGHBORS      - Local ground surface roughness is computed by comparing the local normal to the normals of this many neighbors. Points are discarded as probabaly vegetation if their roughness is too high. 
+  MIN_VEG_HEIGHT           - Putative vegetation points are discarded if below this threshold. 
+  DECIMATION_FACTOR_VEG    - As with the decimation factor above for ground points, but for generating a subsampled vegetation cloud. 
+  DECIMATION_FACTOR_MAXIMA - As with the decimation factor above for ground points, but for generating a subsampled set of local maxima points. 
+  MAXIMA_NORMAL_NEIGHBORS  - Once the above local maxima are determined, their normals are assessed within this radius.
+  ROOF_DIST_THRESH         - Currently, this parameter is not used (for classifying points in the cloud as buildings)
+  ROOF_SMOOTH_THRESH       - Currently, this parameter is not used (for classifying points in the cloud as buildings)
+```
+
+The routine requires input clouds to be in the PCD format. If your clouds are in another format, like .las or .laz, consider using [PDAL](https://pdal.io/stages/writers.pcd.html) to convert.
+
 ## Processing Overview
 
 - Custom point types are created for LAS points, ground points, and vegetation points. 
