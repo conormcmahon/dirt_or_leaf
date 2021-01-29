@@ -199,7 +199,6 @@ void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimatio
     for(int i=0; i<ground_decimated_->points.size(); i++)
         if(input_las_->points[ground_decimated_->points[i].index].classification == 6)
             total_building_pts++;
-    std::cout << " total points: " << ground_decimated_->points.size() << " and building points: " << total_building_pts << std::endl;
     // Filter to Last Returns (optionally)
     if(return_information)
     {
@@ -212,7 +211,6 @@ void LASClassifier<LASType, VegType, GroundType>::decimateToMinima(int decimatio
     for(int i=0; i<ground_decimated_->points.size(); i++)
         if(input_las_->points[ground_decimated_->points[i].index].classification == 6)
             total_building_pts++;
-    std::cout << " total points: " << ground_decimated_->points.size() << " and building points: " << total_building_pts << std::endl;
     // Debug and Output Cloud to Disk 
     if(debugging_)
         std::cout << "Finished decimation. Writing " << ground_decimated_->points.size() << " to   " << output_directory_ + scene_name_ + std::string("_decimated.pcd") << std::endl;

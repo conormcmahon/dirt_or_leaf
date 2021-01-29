@@ -130,19 +130,16 @@ void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output
         for(std::size_t i=0; i<retained_indices.size(); i++)
             input_flat_temp->points.push_back(input_flat->points[retained_indices[i]]);
     }
-    std::cout << " made it in here1...";
     decimateToMinima<CloudType, Cloud2DType, PointFlat>(data, input_flat_temp, output, decimation_factor);
 }
 template <typename CloudType, typename Cloud2DType, typename PointFlat> 
 void decimateToMinima(CloudType data, Cloud2DType input_flat, Cloud2DType output, int decimation_factor)
 {
-    std::cout << " made it in here2...";
     output->points.clear();
     // Stores whether each input point is a minimum
     std::vector<bool> retained_after_decimation(input_flat->points.size(), true);
     pcl::KdTreeFLANN<PointFlat> search_tree;
     search_tree.setInputCloud(input_flat);
-    std::cout << " made it in here3...";
     for(std::size_t i=0; i<input_flat->points.size(); i++)
     {
         // Disqualify points which we've already found to be higher than a neighbor
