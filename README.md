@@ -4,11 +4,9 @@
 
 Open library for segmenting plant and ground returns from aerial LiDAR point clouds.
 
-## Dependencies
+## Dependencies and Installation
 
-Make sure you have [proj](https://proj.org/), [GDAL](https://gdal.org/), [CGAL](https://www.cgal.org/), and [PCL](https://pointclouds.org/) installed.
-
-## Install
+Make sure you have [GDAL](https://gdal.org/), [CGAL](https://www.cgal.org/), and [PCL](https://pointclouds.org/) installed.
 
 ``` 
 # IF you have not installed GDAL yet:
