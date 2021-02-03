@@ -31,7 +31,7 @@ namespace las_triangulation
 
     // Get point height above a given TIN surface
     template <typename CloudType, typename PointType>
-    float pointHeight(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face=true, Face_handle starting_face=Face_handle());
+    float interpolateTIN(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face=true, Face_handle starting_face=Face_handle());
 
 }
  

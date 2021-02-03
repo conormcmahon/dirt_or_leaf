@@ -1,30 +1,33 @@
 
-#include <dirt_or_leaf/ground_tin.h>
+#ifndef LAS_TIN_HPP_
+#define LAS_TIN_HPP_
 
-template <typename GroundType> 
-GroundTIN<GroundType>::GroundTIN()
+#include <dirt_or_leaf/las_tin.h>
+
+template <typename PointType> 
+LAS_TIN<PointType>::LAS_TIN()
 {
-    cloud_.reset(new GC());
+    cloud_.reset(new PC());
     tree_.reset(new Tree2D());
 }
 
-template <typename GroundType> 
-void GroundTIN<GroundType>::setInputCloud(GCP cloud)
+template <typename PointType> 
+void LAS_TIN<PointType>::setInputCloud(PCP cloud)
 {
     *cloud_ = *cloud;
     tree_->setInputCloud(cloud_);
     face_mapping_ = std::vector<las_triangulation::Delaunay::Face_handle>(cloud->points.size());
 }
-template <typename GroundType> 
-void GroundTIN<GroundType>::setInputCloud(GCP cloud, Tree2DP tree)
+template <typename PointType> 
+void LAS_TIN<PointType>::setInputCloud(PCP cloud, Tree2DP tree)
 {
     *cloud_ = *cloud;
     *tree_ = *tree;
     face_mapping_ = std::vector<las_triangulation::Delaunay::Face_handle>(cloud->points.size());
 }
 
-template <typename GroundType> 
-void GroundTIN<GroundType>::generateTIN()
+template <typename PointType> 
+void LAS_TIN<PointType>::generateTIN()
 {
     // Generate Triangulation
     las_triangulation::delaunayTriangulation(cloud_, TIN_);
@@ -42,19 +45,20 @@ void GroundTIN<GroundType>::generateTIN()
         }
 }
 
-template <typename GroundType> 
-void GroundTIN<GroundType>::saveTIN(std::string filename, bool remean, Eigen::Vector3d offset)
+template <typename PointType> 
+void LAS_TIN<PointType>::saveTIN(std::string filename, bool remean, Eigen::Vector3d offset)
 {
     // If cloud was centered around origin, re-apply offsets before printing
-    GCP offset_cloud(new GC);
+    PCP offset_cloud(new PC);
     las_filtering::reMeanCloud(cloud_, offset_cloud, offset);
     // Print .PLY triangulation
     las_triangulation::outputPly(offset_cloud, TIN_, filename);
 }
 
-template <typename GroundType> 
-template <typename CloudType, typename PointType>
-float GroundTIN<GroundType>::getPointHeight(CloudType source_cloud, PointType point)
+// Gets the height of the TIN at the XY coordinates provided in POINT
+template <typename PointType> 
+template <typename TargetPointType>
+float LAS_TIN<PointType>::interpolateTIN(TargetPointType point)
 {
     // Get nearest vertex within TIN to source point
     pcl::Point2DGround point_2d;
@@ -66,5 +70,8 @@ float GroundTIN<GroundType>::getPointHeight(CloudType source_cloud, PointType po
     tree_->nearestKSearch(point_2d, 1, nearest_indices, nearest_dists);
 
     // Get point height
-    return las_triangulation::pointHeight<CloudType, PointType>(source_cloud, point, TIN_, true, face_mapping_[nearest_indices[0]]);
+    float temp = las_triangulation::interpolateTIN<PCP, TargetPointType>(cloud_, point, TIN_, true, face_mapping_[nearest_indices[0]]);
+    return temp;
 }
+
+#endif //LAS_TIN_HPP_

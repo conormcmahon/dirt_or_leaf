@@ -28,7 +28,7 @@ namespace las_triangulation
 
     // Returns the point height above a given TIN
     template <typename CloudType, typename PointType>
-    float pointHeight(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face)
+    float interpolateTIN(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face)
     {
         CGALPoint point_cgal(point.x, point.y);
 
@@ -51,7 +51,7 @@ namespace las_triangulation
         vert_one << cloud->points[ind_1].x, cloud->points[ind_1].y, cloud->points[ind_1].z;
         vert_two << cloud->points[ind_2].x, cloud->points[ind_2].y, cloud->points[ind_2].z;
         vert_three << cloud->points[ind_3].x, cloud->points[ind_3].y, cloud->points[ind_3].z;
-        point_eig << point.x, point.y, point.z;
+        point_eig << point.x, point.y, 0;
         //   Edges of Triangle
         Eigen::Vector3f side_one, side_two;
         side_one = vert_two - vert_one;
@@ -61,18 +61,16 @@ namespace las_triangulation
         Eigen::Vector3f plane_normal;
         plane_normal = side_one.cross(side_two);
         plane_normal /= plane_normal.norm();
-        // Force normal to point upwards
-        plane_normal[2] = abs(plane_normal[2]);
+        // Force normal to point downwards
+        if(plane_normal[2] > 0)
+        {
+            plane_normal *= -1;
+        }
 
-        // Distance from Point to Plane (along plane normal)
-        Eigen::Vector3f point_dist = point_eig - vert_one;
-        Eigen::Vector3f norm_to_point = point_dist.dot(plane_normal) * plane_normal;
-        float point_dist_normal = norm_to_point.norm();
         // Distance from Point to Plane (along vertical axis)
-        float plane_angle_from_vert = acos(norm_to_point.dot(Eigen::Vector3f(0,0,1)) / point_dist_normal);
-        float height = point_dist_normal * cos(plane_angle_from_vert);
-    
-        return height;
+        Eigen::Vector3f vertical_axis;
+        vertical_axis << 0, 0, 1;
+        return (vert_one - point_eig).dot(plane_normal) / plane_normal.dot(vertical_axis);
     }
 
 

@@ -46,7 +46,7 @@ void LASClassifier<LASType, VegType, GroundType>::initializeClouds(){
     ground_filtered_tree_.reset(new Tree2D());
     ground_tree_.reset(new Tree2D());
     // TIN Structure
-    TIN_data_ = GroundTIN<GroundType>();
+    TIN_data_ = LAS_TIN<GroundType>();
     // Offset for XYZ Coordinates (to de-mean) - initialize to zero
     offset_ << 0, 0, 0;
 }
@@ -381,7 +381,8 @@ void LASClassifier<LASType, VegType, GroundType>::extractVegetationTIN(float min
                 continue;
         }
         // Get point height over ground TIN
-        float height = TIN_data_.getPointHeight(ground_filtered_, input_las_flattened_->points[i]);
+        float ground_height = TIN_data_.interpolateTIN(input_las_->points[i]);
+        float height = input_las_->points[i].z - ground_height;
         if(height > min_height)
         {
             VegType point;

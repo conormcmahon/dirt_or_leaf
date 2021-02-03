@@ -4,7 +4,7 @@
 
 #include <dirt_or_leaf/las_surfacing.hpp>
 #include <dirt_or_leaf/las_conversions.hpp>
-#include <dirt_or_leaf/ground_tin.hpp>
+#include <dirt_or_leaf/las_tin.hpp>
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/io/vtk_io.h>
@@ -77,7 +77,7 @@ private:
     GCP ground_filtered_;
     // Final ground cloud (after re-adding excluded points)
     GCP ground_;
-    GroundTIN<GroundType> TIN_data_; 
+    LAS_TIN<GroundType> TIN_data_; 
     // Vegetation Cloud
     VCP vegetation_;
     VCP vegetation_decimated_;

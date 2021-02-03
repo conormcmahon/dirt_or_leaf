@@ -530,7 +530,7 @@ float relativePointHeight(CloudType cloud, SourcePointType point, KdTreeType tre
 template <typename CloudType, typename SourcePointType>
 float relativePointHeight(CloudType cloud, SourcePointType point, las_triangulation::Delaunay &ground)
 {
-    return las_triangulation::pointHeight(cloud, point, ground);
+    return point.z - las_triangulation::interpolateTIN(cloud, point, ground);
 }
 
 
