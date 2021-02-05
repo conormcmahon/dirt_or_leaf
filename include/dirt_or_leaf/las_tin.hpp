@@ -58,7 +58,7 @@ void LAS_TIN<PointType>::saveTIN(std::string filename, bool remean, Eigen::Vecto
 // Gets the height of the TIN at the XY coordinates provided in POINT
 template <typename PointType> 
 template <typename TargetPointType>
-float LAS_TIN<PointType>::interpolateTIN(TargetPointType point)
+float LAS_TIN<PointType>::interpolateTIN(TargetPointType point, float nodata_value)
 {
     // Get nearest vertex within TIN to source point
     pcl::Point2DGround point_2d;
@@ -70,7 +70,25 @@ float LAS_TIN<PointType>::interpolateTIN(TargetPointType point)
     tree_->nearestKSearch(point_2d, 1, nearest_indices, nearest_dists);
 
     // Get point height
-    float temp = las_triangulation::interpolateTIN<PCP, TargetPointType>(cloud_, point, TIN_, true, face_mapping_[nearest_indices[0]]);
+    return las_triangulation::interpolateTIN<PCP, TargetPointType>(cloud_, point, TIN_, true, face_mapping_[nearest_indices[0]], nodata_value);
+}
+
+// Gets the height of the TIN at the XY coordinates provided in POINT
+template <typename PointType> 
+template <typename TargetPointType>
+Eigen::Vector2f LAS_TIN<PointType>::slopeAtPoint(TargetPointType point, float nodata_value)
+{
+    // Get nearest vertex within TIN to source point
+    pcl::Point2DGround point_2d;
+    point_2d.x = point.x;
+    point_2d.y = point.y;
+    point_2d.z = point.z;
+    std::vector<int> nearest_indices;
+    std::vector<float> nearest_dists;
+    tree_->nearestKSearch(point_2d, 1, nearest_indices, nearest_dists);
+
+    // Get point height
+    Eigen::Vector2f temp = las_triangulation::slopeAtPoint<PCP, TargetPointType>(cloud_, point, TIN_, true, face_mapping_[nearest_indices[0]], nodata_value);
     return temp;
 }
 

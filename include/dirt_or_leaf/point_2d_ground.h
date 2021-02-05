@@ -16,6 +16,10 @@ struct Point2DGround
     float curvature;
     float height_diff_avg;
     float norm_diff_avg;
+    float slope;
+    float aspect;
+    float height_over_stream;
+    float dist_from_stream;
     int index;
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW     // Ensure proper alignment
   } EIGEN_ALIGN16;
@@ -32,6 +36,11 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::Point2DGround,
                                   (float, curvature, curvature)
                                   (float, height_diff_avg, height_diff_avg)
                                   (float, norm_diff_avg, norm_diff_avg)
+                                  (float, slope, slope)
+                                  (float, aspect, aspect)
+                                  (float, height_over_stream, height_over_stream)
+                                  (float, height_over_stream, dist_from_stream)
+                                  (int, index, index)
 )
 
 namespace pcl {

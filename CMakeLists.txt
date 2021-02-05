@@ -25,22 +25,22 @@ endif()
 
 # New Libraries 
 add_library(las_classifier src/las_classifier.cpp)
-target_link_libraries(las_classifier ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(las_classifier ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 add_library(las_filtering src/las_filtering.cpp)
-target_link_libraries(las_filtering ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(las_filtering ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 add_library(las_surfacing src/las_surfacing.cpp)
-target_link_libraries(las_surfacing ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(las_surfacing ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 add_library(las_triangulation src/las_triangulation.cpp)
-target_link_libraries(las_triangulation ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(las_triangulation ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 add_library(las_tin src/las_tin.cpp)
-target_link_libraries(las_tin ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(las_tin ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 add_library(region_growing_smooth_distance src/region_growing_smooth_distance.cpp)
-target_link_libraries(region_growing_smooth_distance ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(region_growing_smooth_distance ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 add_library(las_point_types src/las_point_types.cpp)
-target_link_libraries(las_point_types ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(las_point_types ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 # Test Executable
 add_executable(pcl_test src/pcl_test.cpp)
-target_link_libraries(pcl_test ${PCL_LIBRARIES} gdal ${CGAL_LIBRARIES})
+target_link_libraries(pcl_test ${PCL_LIBRARIES} ${CGAL_LIBRARIES})
 
 
 install(TARGETS las_classifier las_filtering las_surfacing las_triangulation las_tin region_growing_smooth_distance las_point_types pcl_test

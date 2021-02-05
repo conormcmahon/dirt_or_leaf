@@ -28,7 +28,7 @@ namespace las_triangulation
 
     // Returns the point height above a given TIN
     template <typename CloudType, typename PointType>
-    float interpolateTIN(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face)
+    float interpolateTIN(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face, float nodata_value)
     {
         CGALPoint point_cgal(point.x, point.y);
 
@@ -43,7 +43,7 @@ namespace las_triangulation
         unsigned ind_3 = face->vertex(2)->info();
        // Skip points which are outside the initial minima convex hull 
         if(std::max(std::max(ind_1,ind_2),ind_3) > cloud->points.size()-1)
-            return -1000; 
+            return nodata_value; 
         
         // Set up Eigen structs
         //   Vertices of Triangle
@@ -74,6 +74,64 @@ namespace las_triangulation
     }
 
 
+    
+    // Generate a 2-value vector containing:
+    //   SLOPE in radians (0 for flat terrain to pi for vertical cliffs)
+    //   ASPECT in radians (0 for east-facing areas, increasing north-west-south and back to east at 2*pi)
+    template <typename CloudType, typename PointType>
+    Eigen::Vector2f slopeAtPoint(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face, float nodata_value)
+    {
+        // Set up default values
+        Eigen::Vector2f terrain_data;
+        terrain_data << nodata_value, nodata_value;
+
+        CGALPoint point_cgal(point.x, point.y);
+
+        // Get containing triangle on Delauney Triangulation for source point - vertex indices in ground cloud
+        Face_handle face;
+        if(use_starting_face)
+            face = triangulation.locate(point_cgal, starting_face);
+        else
+            face = triangulation.locate(point_cgal);
+        unsigned ind_1 = face->vertex(0)->info();
+        unsigned ind_2 = face->vertex(1)->info();
+        unsigned ind_3 = face->vertex(2)->info();
+       // Skip points which are outside the initial minima convex hull 
+        if(std::max(std::max(ind_1,ind_2),ind_3) > cloud->points.size()-1)
+            return terrain_data; 
+        
+        // Set up Eigen structs
+        //   Vertices of Triangle
+        Eigen::Vector3f vert_one, vert_two, vert_three, point_eig;
+        vert_one << cloud->points[ind_1].x, cloud->points[ind_1].y, cloud->points[ind_1].z;
+        vert_two << cloud->points[ind_2].x, cloud->points[ind_2].y, cloud->points[ind_2].z;
+        vert_three << cloud->points[ind_3].x, cloud->points[ind_3].y, cloud->points[ind_3].z;
+        point_eig << point.x, point.y, 0;
+        //   Edges of Triangle
+        Eigen::Vector3f side_one, side_two;
+        side_one = vert_two - vert_one;
+        side_two = vert_three - vert_one;
+
+        // Plane normal for triangle
+        Eigen::Vector3f plane_normal;
+        plane_normal = side_one.cross(side_two);
+        plane_normal /= plane_normal.norm();
+        // Force normal to point upwards
+        if(plane_normal[2] < 0)
+        {
+            plane_normal *= -1;
+        }
+
+        Eigen::Vector3f vertical_axis;
+        vertical_axis << 0, 0, 1;
+
+        terrain_data << acos(plane_normal.dot(vertical_axis)),   // slope
+                        atan2(plane_normal[1], plane_normal[0]); // aspect
+
+        return terrain_data;
+    }
+
+
 
     // Create an output .ply triangulation file
     //   REQUIRES that the indices of points within the TRIANGULATION object match those in CLOUD (run delaunayTriangulation() to meet this)
@@ -93,11 +151,6 @@ namespace las_triangulation
             face_vertices.vertices.push_back(uint32_t(fit->vertex(1)->info()));
             face_vertices.vertices.push_back(uint32_t(fit->vertex(2)->info()));
             mesh_pcl->polygons.push_back(face_vertices);
-
-            //std::cout << "\nIndices:        " << uint32_t(fit->vertex(0)->info()) << " " << uint32_t(fit->vertex(1)->info()) << " " << uint32_t(fit->vertex(2)->info());
-            //std::cout << "\nCGAL Locations: " << triangulation.triangle(fit);
-            //std::cout << "\nPCL Locations:  " << ground_minima->points[fit->vertex(0)->info()].x << " " << ground_minima->points[fit->vertex(0)->info()].y << " " << ground_minima->points[fit->vertex(0)->info()].scale;
-            //std::cout << "\nPCL Locations:  " << ground_xyz->points[fit->vertex(0)->info()].x << " " << ground_xyz->points[fit->vertex(0)->info()].y << " " << ground_xyz->points[fit->vertex(0)->info()].z;
         }
 
         // last parameter is write precision 

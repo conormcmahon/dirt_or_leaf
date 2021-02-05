@@ -21,8 +21,15 @@ public:
     void setInputCloud(PCP cloud);
     void setInputCloud(PCP cloud, Tree2DP tree);
     void generateTIN();
+    // Get height of TIN at a given point (XY)
     template <typename TargetPointType>
-    float interpolateTIN(TargetPointType point);
+    float interpolateTIN(TargetPointType point, float nodata_value=-9999);
+    // Get TIN terrain information at a given point (XY):
+    //    index 0: Slope (0 to pi)
+    //    index 1: Aspect (0 to pi, Euclidean from East=0 to South=3/2*pi)
+    template <typename TargetPointType>
+    Eigen::Vector2f slopeAtPoint(TargetPointType point, float nodata_value=-9999);
+    // Save to a .PLY triangles file
     void saveTIN(std::string filename, bool remean=false, Eigen::Vector3d offset=Eigen::Vector3d::Zero());
 
 private: 
