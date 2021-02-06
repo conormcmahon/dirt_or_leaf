@@ -28,7 +28,7 @@ namespace las_triangulation
 
     // Returns the point height above a given TIN
     template <typename CloudType, typename PointType>
-    float interpolateTIN(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face, float nodata_value)
+    float interpolateTIN(const CloudType cloud, PointType point, const Delaunay& triangulation, bool use_starting_face, Face_handle starting_face, float nodata_value)
     {
         CGALPoint point_cgal(point.x, point.y);
 
@@ -79,7 +79,7 @@ namespace las_triangulation
     //   SLOPE in radians (0 for flat terrain to pi for vertical cliffs)
     //   ASPECT in radians (0 for east-facing areas, increasing north-west-south and back to east at 2*pi)
     template <typename CloudType, typename PointType>
-    Eigen::Vector2f slopeAtPoint(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face, Face_handle starting_face, float nodata_value)
+    Eigen::Vector2f slopeAtPoint(const CloudType cloud, PointType point, const Delaunay& triangulation, bool use_starting_face, Face_handle starting_face, float nodata_value)
     {
         // Set up default values
         Eigen::Vector2f terrain_data;

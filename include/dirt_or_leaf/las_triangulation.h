@@ -31,10 +31,10 @@ namespace las_triangulation
 
     // Get point height above a given TIN surface
     template <typename CloudType, typename PointType>
-    float interpolateTIN(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face=true, Face_handle starting_face=Face_handle(), float nodata_value=-9999);
+    float interpolateTIN(const CloudType cloud, PointType point, const Delaunay& triangulation, bool use_starting_face=true, Face_handle starting_face=Face_handle(), float nodata_value=-9999);
     // Get slope and aspect at a given point on TIN 
     template <typename CloudType, typename PointType>
-    Eigen::Vector2f slopeAtPoint(CloudType cloud, PointType point, Delaunay& triangulation, bool use_starting_face=true, Face_handle starting_face=Face_handle(), float nodata_value=-9999);
+    Eigen::Vector2f slopeAtPoint(const CloudType cloud, PointType point, const Delaunay& triangulation, bool use_starting_face=true, Face_handle starting_face=Face_handle(), float nodata_value=-9999);
 
 }
  

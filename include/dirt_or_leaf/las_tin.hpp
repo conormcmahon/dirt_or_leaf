@@ -58,10 +58,10 @@ void LAS_TIN<PointType>::saveTIN(std::string filename, bool remean, Eigen::Vecto
 // Gets the height of the TIN at the XY coordinates provided in POINT
 template <typename PointType> 
 template <typename TargetPointType>
-float LAS_TIN<PointType>::interpolateTIN(TargetPointType point, float nodata_value)
+float LAS_TIN<PointType>::interpolateTIN(TargetPointType point, float nodata_value) const
 {
     // Get nearest vertex within TIN to source point
-    pcl::Point2DGround point_2d;
+    PointType point_2d;
     point_2d.x = point.x;
     point_2d.y = point.y;
     point_2d.z = point.z;
@@ -76,10 +76,10 @@ float LAS_TIN<PointType>::interpolateTIN(TargetPointType point, float nodata_val
 // Gets the height of the TIN at the XY coordinates provided in POINT
 template <typename PointType> 
 template <typename TargetPointType>
-Eigen::Vector2f LAS_TIN<PointType>::slopeAtPoint(TargetPointType point, float nodata_value)
+Eigen::Vector2f LAS_TIN<PointType>::slopeAtPoint(TargetPointType point, float nodata_value) const
 {
     // Get nearest vertex within TIN to source point
-    pcl::Point2DGround point_2d;
+    PointType point_2d;
     point_2d.x = point.x;
     point_2d.y = point.y;
     point_2d.z = point.z;
