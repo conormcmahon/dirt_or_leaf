@@ -39,7 +39,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(pcl::Point2DGround,
                                   (float, slope, slope)
                                   (float, aspect, aspect)
                                   (float, height_over_stream, height_over_stream)
-                                  (float, height_over_stream, dist_from_stream)
+                                  (float, dist_from_stream, dist_from_stream)
                                   (int, index, index)
 )
 

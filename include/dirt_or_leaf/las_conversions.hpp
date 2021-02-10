@@ -1,4 +1,7 @@
 
+#ifndef LAS_CONVERSIONS_HPP_
+#define LAS_CONVERSIONS_HPP_
+
 #include "dirt_or_leaf/las_conversions.h"
 
 namespace pcl
@@ -139,3 +142,5 @@ namespace pcl
         return point_out;
     }
 }
+
+#endif //LAS_CONVERSIONS_HPP_
